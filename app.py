@@ -74,11 +74,34 @@ def add_dojo_to_premium():
     print(f"This is the website:{website}")
     email = request.form.get('email')
     phone = request.form.get('phone')
-
     # Get the image files
     dojo_image = request.files.get('dojo_image')
     sensei_image = request.files.get('sensei_image')
     athletes_image = request.files.get('athletes_image')
+    #get the schedule data
+    index=0
+    schedule_entries = []
+    while True:
+        day_of_week = request.form.get(f'schedules[{index}][day_of_week]')
+        start_time = request.form.get(f'schedules[{index}][start_time]')
+        end_time = request.form.get(f'schedules[{index}][end_time]')
+        instructor = request.form.get(f'schedules[{index}][instructor]')
+        competition_only = request.form.get(f'schedules[{index}][competition_only]') == "on"
+
+        if not day_of_week or not start_time or not end_time or not instructor or not competition_only:
+            break
+
+        schedule_entries.append({
+            'day_of_week': day_of_week,
+            'start_time': start_time,
+            'end_time': end_time,
+            'instructor': instructor,
+            'competition_only': competition_only
+        })
+
+        index += 1
+
+    print("This is the schedule_entries:",schedule_entries)
 
     # Check if main dojo image exists
     if dojo_image:
@@ -103,15 +126,32 @@ def add_dojo_to_premium():
         cursor = conn.cursor()
 
         cursor.execute('''
-            INSERT INTO premium_listings (
-                name,address,city,age_range,website,phone,email,Image_path,sensei,Athletes
+            INSERT INTO dojos (
+                name,address,city,age_range,website,phone,email,sensei_path,athletes_path,image_path
             )
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             name, address, city, age_range, website,
             phone, email,dojo_image_path, sensei_image_path, athletes_image_path
         ))
+        conn.commit()
 
+        #get the id of the dojo
+        dojo_id = cursor.lastrowid
+        
+        for schedule_entry in schedule_entries:
+            cursor.execute("""
+            INSERT INTO schedules (
+                dojo_id, day_of_week, start_time, end_time, instructor, competition_only
+            ) VALUES (?, ?, ?, ?, ?, ?)
+        """, (
+            dojo_id,
+            schedule_entry['day_of_week'],
+            schedule_entry['start_time'],
+            schedule_entry['end_time'],
+            schedule_entry['instructor'],
+            schedule_entry['competition_only']
+        ))
         conn.commit()
         conn.close()
 

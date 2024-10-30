@@ -57,12 +57,6 @@
             background: #cc0000;
         }
 
-        .form-container h2 {
-            color: #fff;
-            margin-bottom: 20px;
-            padding: 10px 0;
-        }
-
         .form-container input[type="text"],
         .form-container input[type="email"],
         .form-container input[type="number"],
@@ -125,7 +119,7 @@
             display: none;
         }
 
-        .form-container .btn {
+        .add-dojo-btn {
             background-color: #ff3333;
             color: white;
             padding: 14px 24px;
@@ -138,7 +132,7 @@
             margin-top: 20px;
         }
 
-        .form-container .btn:hover {
+        .add-dojo-btn:hover {
             background-color: #cc0000;
         }
 
@@ -158,29 +152,40 @@
         }
 
         .schedule-box {
-            width: 90%;
-            border: 1px dashed #fff;
+            border: 2px dashed #666;
+            border-radius: 5px;
             padding: 20px;
-            margin:20px;
-        }
-        /* Schedule specific styles */
-        .schedule-section {
-            margin-top: -10px;
-        }
-
-        .schedule-h3{
-            color:antiquewhite;
-            font-size: 20px;
-            margin-bottom: -10px;
-        }
-
-        .schedule-entry {
-            background-color: #333;
-            padding: 15px;
-            border-radius: 8px;
+            text-align: center;
             margin-bottom: 15px;
-            position: relative;
         }
+
+    .schedule-section {
+        margin-top: -10px;
+    }
+
+    .schedule-h3 {
+        color: antiquewhite;
+        font-size: 20px;
+        margin-bottom: -10px;
+        margin-top:-10px;
+        text-align: center;
+    }
+    .add-schedule-btn{
+        background-color: #ff3333;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        margin-top: 30px; 
+        cursor: pointer; 
+    }
+    .schedule-entry {
+        background-color: #333;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        margin-top: 10px;
+        position: relative;
+    }
 
         .delete-schedule {
             position: absolute;
@@ -199,11 +204,6 @@
 
         .delete-schedule:hover {
             background-color: #cc0000;
-        }
-
-        .add-schedule-btn {
-            background-color: #444;
-            margin-bottom: 20px;
         }
 
         .schedule-entry label {
@@ -228,8 +228,7 @@
     <div class="form-overlay" id="formOverlay">
         <div class="form-container">
             <button class="close-btn" onclick="closeForm()">×</button>
-            <h2>Add Premium Dojo</h2>
-            
+
             <form action="/add_dojo_to_premium" method="POST" id="add_dojo_form_premium" enctype="multipart/form-data">
                 <input name="dojo_name" type="text" placeholder="Dojo Name" required>
                 <input name="address" type="text" placeholder="Address" required>
@@ -238,8 +237,6 @@
                 <input name="website" type="text" placeholder="Website">
                 <input name="email" type="email" placeholder="Email" required>
                 <input name="phone" type="text" placeholder="Phone number" required>
-                <input name="sensei" type="text" placeholder="Sensei">
-                <input name="renowned_athletes" type="text" placeholder="Renowned Athletes">
 
                 <!-- Schedule Section -->
                 <div class="schedule-box">
@@ -283,7 +280,7 @@
                     </div>
                 </div>
 
-                <input class="btn" type="submit" value="Add Premium Dojo">
+                <input class="add-dojo-btn" type="submit" value="Add Premium Dojo">
             </form>
         </div>
     </div>

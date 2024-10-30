@@ -35,15 +35,16 @@ def check_data():
     conn = sqlite3.connect('dojo_listings.db')
     cursor = conn.cursor()
 
-    # Execute a SELECT query
-    cursor.execute('SELECT * FROM normal_listings;')
-
-    cursor.execute('SELECT * FROM premium_listings;')
-
+    '''cursor.execute('SELECT * FROM dojos;')
     # Fetch all results
     rows = cursor.fetchall()
 
     # Print the results
+    for row in rows:
+        print(row)
+'''
+    cursor.execute('SELECT * FROM schedules;')
+    rows = cursor.fetchall()
     for row in rows:
         print(row)
 
@@ -56,7 +57,7 @@ def delete_by_id(id):
     cursor = conn.cursor()
 
     # Execute a DELETE query
-    cursor.execute('DELETE FROM premium_listings WHERE id = ?;', (id,))
+    cursor.execute('DELETE FROM dojos WHERE id = ?;', (id,))
 
     # Commit the changes
     conn.commit()
@@ -153,7 +154,8 @@ def clear_all_data(confirm=False):
         conn.close()
 
 if __name__ == "__main__":
-    #check_data()
+    check_data()
     #clear_all_data(confirm=True)
-    inspect_database('dojo_listings.db')
+    #delete_by_id(1)
+    #inspect_database('dojo_listings.db')
     #delete_db(confirm=True)    
