@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        .form-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease-in-out;
+            overflow: auto;
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: #272727;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            font-family: 'Arial', sans-serif;
+            animation: scaleUp 0.3s ease-in-out;
+            position: relative;
+            color: #fff;
+            margin: 40px auto;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* Scrollbar styling */
+        .form-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .form-container::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-radius: 4px;
+        }
+
+        .form-container::-webkit-scrollbar-thumb {
+            background: #ff3333;
+            border-radius: 4px;
+        }
+
+        .form-container::-webkit-scrollbar-thumb:hover {
+            background: #cc0000;
+        }
+
+        .form-container h2 {
+            color: #fff;
+            margin-bottom: 20px;
+            padding: 10px 0;
+        }
+
+        .form-container input[type="text"],
+        .form-container input[type="email"],
+        .form-container input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+
+        .image-upload-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .image-upload-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .optional-text {
+            color: #888;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+
+        .image-upload-container {
+            border: 2px dashed #666;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        .image-upload-container:hover {
+            border-color: #ff3333;
+        }
+
+        .image-upload-container i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 150px;
+            display: none;
+            margin-top: 10px;
+        }
+
+        .form-container input[type="file"] {
+            display: none;
+        }
+
+        .form-container .btn {
+            background-color: #ff3333;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .form-container .btn:hover {
+            background-color: #cc0000;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #ff3333;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleUp {
+            from { transform: scale(0.95); }
+            to { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-overlay" id="formOverlay">
+        <div class="form-container">
+            <button class="close-btn" onclick="closeForm()">×</button>
+            <h2>Add Premium Dojo</h2>
+            
+            <form action="/add_dojo_to_premium" method="POST" id="add_dojo_form_premium" enctype="multipart/form-data">
+                <input name="dojo_name" type="text" placeholder="Dojo Name" required>
+                <input name="address" type="text" placeholder="Address" required>
+                <input name="city" type="text" placeholder="City" required>
+                <input name="age_range" type="text" placeholder="Students Age Range (e.g., 10-18)" required>
+                <input name="website" type="text" placeholder="Website">
+                <input name="email" type="email" placeholder="Email" required>
+                <input name="phone" type="text" placeholder="Phone number" required>
+                <input name="sensei" type="text" placeholder="Sensei">
+                <input name="renowned_athletes" type="text" placeholder="Renowned Athletes">
+
+                <!-- Dojo Image Upload -->
+                <div class="image-upload-group">
+                    <label>Dojo Image</label>
+                    <div class="image-upload-container" id="dojoImageContainer">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload dojo image</p>
+                        <input type="file" name="dojo_image" id="dojoImage" accept="image/*" required>
+                        <img id="dojoPreview" class="image-preview">
+                    </div>
+                </div>
+
+                <!-- Sensei Image Upload -->
+                <div class="image-upload-group">
+                    <label>Sensei Image <span class="optional-text">(Optional)</span></label>
+                    <div class="image-upload-container" id="senseiImageContainer">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload sensei image</p>
+                        <input type="file" name="sensei_image" id="senseiImage" accept="image/*">
+                        <img id="senseiPreview" class="image-preview">
+                    </div>
+                </div>
+
+                <!-- Athletes Image Upload -->
+                <div class="image-upload-group">
+                    <label>Renowned Athletes Image <span class="optional-text">(Optional)</span></label>
+                    <div class="image-upload-container" id="athletesImageContainer">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload athletes image</p>
+                        <input type="file" name="athletes_image" id="athletesImage" accept="image/*">
+                        <img id="athletesPreview" class="image-preview">
+                    </div>
+                </div>
+
+                <input class="btn" type="submit" value="Add Premium Dojo">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Function to handle image preview
+        function setupImagePreview(inputId, previewId, containerId) {
+            const container = document.getElementById(containerId);
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+
+            container.addEventListener('click', () => input.click());
+
+            input.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        }
+
+        // Setup preview for all image inputs
+        setupImagePreview('dojoImage', 'dojoPreview', 'dojoImageContainer');
+        setupImagePreview('senseiImage', 'senseiPreview', 'senseiImageContainer');
+        setupImagePreview('athletesImage', 'athletesPreview', 'athletesImageContainer');
+
+        // Function to close the form
+        function closeForm() {
+            $('#formOverlay').css('display', 'none');
+        }
+    </script>
+</body>
+</html>

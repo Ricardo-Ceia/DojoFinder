@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        /* Overlay styling to center the form */
+        .form-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* Form styling */
+        .form-container {
+            background-color:  #272727;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            font-family: 'Arial', sans-serif;
+            animation: scaleUp 0.3s ease-in-out;
+            position: relative;
+        }
+
+        /* Input styling */
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+
+        /* Submit button styling */
+        .form-container .btn {
+            background-color: #ff3333;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-container .btn:hover {
+            background-color: #cc0000;
+        }
+
+        /* Close button styling */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #ff3333;
+        }
+
+        /* Validation message styling */
+        .validation-message {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleUp {
+            from { transform: scale(0.95); }
+            to { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Centered form with an overlay -->
+    <div class="form-overlay" id="formOverlay">
+        <div class="form-container">
+            <!-- Close button -->
+            <button class="close-btn">×</button>
+
+            <!-- Form fields -->
+            <form action="/add_dojo_to_normal" method="POST" id="add_dojo_form_normal">
+                <input name="dojo_name" type="text" placeholder="Dojo Name" size="30" required>
+                <input name="address" type="text" placeholder="Address" size="30" required>
+                <input name="city" type="text" placeholder="City" size="30" required>
+                <input name="age_range" type="text" placeholder="Students Age Range (e.g., 10-18)" size="30" required>
+
+                <input class="btn" type="submit" value="Add Dojo" name="add_dojo">
+            </form>
+        </div>
+    </div>
+
+    <!-- Validation message popup -->
+    <div class="validation-message" id="validationMessage">
+        Your dojo listing is in the validation process!
+    </div>
+
+    <script>
+    $(document).ready(function() {
+        // Initialize form handlers immediately
+        initializeFormHandlers();
+
+        // Handle add dojo button click
+        $('.add-dojo-button').on('click', function(e) {
+            console.log("The button has been clicked!")
+            $('#formOverlay').css('display', 'flex');
+        });
+    });
+
+    // Function to initialize all form handlers
+    function initializeFormHandlers() {
+        // Handle form close
+        $('.close-btn').on('click', function() {
+            closeForm();
+        });
+
+        // Handle overlay click to close
+        $('#formOverlay').on('click', function(e) {
+            if (e.target === this) {
+                closeForm();
+            }
+        });
+
+        // Handle form submission
+        $('#add_dojo_form_normal').on('submit', function(event) {
+            closeForm();
+            showValidationMessage();
+        });
+    }
+
+    // These functions should be globally available
+    function closeForm() {
+        $('#formOverlay').hide();
+    }
+
+    function showValidationMessage() {
+        const validationMessage = $('#validationMessage');
+        validationMessage.show();
+
+        setTimeout(() => {
+            validationMessage.hide();
+        }, 5000);
+    }
+    </script>
+
+</body>
+</html>

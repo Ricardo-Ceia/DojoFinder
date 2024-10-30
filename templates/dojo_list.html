@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Dojo Listings</title>
+</head>
+<body>
+    <div class="dojo-container">
+        <!-- Premium Dojos -->
+        {% for dojo in premium_dojos %}
+            <div class="dojo premium">
+                <span class="recommended-tag">Recommended</span>
+                <div class="dojo-image" style="background-image: url('{{ dojo[7] }}');"></div>
+                <div class="dojo-details">
+                    <h3 class="dojo-name">{{ dojo[0] }}</h3>
+                    <p class="dojo-address">
+                        <a href="https://www.google.com/maps/search/?api=1&query=Example+Address" target="_blank" class="address-link">
+                            <i class="fas fa-map-marker-alt google-maps-icon"></i>
+                        </a>
+                        <span>{{dojo[1]}}</span>
+                    </p>
+                    <p class="dojo-age-range">
+                        <strong>Age Range:</strong> <span class="age-range-value">{{ dojo[2] }}</span>
+                    </p>
+                    <p class="contact-info dojo-email">
+                        <i class="fas fa-envelope"></i> {{ dojo[5] }}
+                    </p>
+                    <p class="contact-info dojo-phone">
+                        <i class="fas fa-phone"></i> {{ dojo[6] }}
+                    </p>
+                    {% if dojo[8] %}
+                    <p class="contact-info dojo-website">
+                        <i class="fas fa-globe"></i>
+                        <a href="{{ dojo[8] }}" target="_blank" class="website-link">{{ dojo[8] }}</a>
+                    </p>
+                    {% endif %}
+                    {% if dojo[3] or dojo[4] %}
+                    <div class="avatars-container">
+                        {% if dojo[4] %}
+                        <div class="dojo-info athlete">
+                            <img src="{{ dojo[4] }}" alt="Renowned Athlete Avatar" class="avatar">
+                            <p class="dojo-athletes">Athlete</p>
+                        </div>
+                        {% endif %}
+                        {% if dojo[3] %}
+                        <div class="dojo-info sensei">
+                            <img src="{{ dojo[3] }}" alt="Sensei Avatar" class="avatar">
+                            <p class="dojo-sensei">Sensei</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <!-- Normal Dojos -->
+        {% for dojo in normal_dojos %}
+            <div class="dojo">
+                <div class="dojo-image" style="background-image: url('../static/background_image_card2.webp');"></div>
+                <div class="dojo-details">
+                    <h3 class="dojo-name">{{ dojo[0] }}</h3>
+                    <p class="dojo-address">
+                        <a href="https://www.google.com/maps/search/?api=1&query=Example+Address" target="_blank" class="address-link">
+                            <i class="fas fa-map-marker-alt google-maps-icon"></i>
+                        </a>
+                        <span>{{dojo[1]}}</span>
+                    </p>
+                    <p class="dojo-age-range">
+                        <strong>Age Range:</strong> <span class="age-range-value">{{ dojo[2] }}</span>
+                    </p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
