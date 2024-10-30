@@ -119,22 +119,7 @@ def add_dojo_to_premium():
     else:
         return "Dojo image upload failed", 400
     
-@app.route('/stripe_payment')
-def stripe_payment():
-    session = stripe.checkout.Session.create(
-        payment_method_types=['card'],
-        line_items=[{
-            'price': 'YOUR_PRODUCT_PRICE_ID',
-            'quantity': 1,
-        }],
-        mode='payment',
-        success_url=url_for('thanks', _external=True) + '?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url=url_for('index', _external=True),
-    )
-    return {
-        'checkout_session_id': session['id'], 
-        'checkout_public_key': app.config['STRIPE_PUBLIC_KEY']
-    }
+
 
 
 @app.route('/confirm_dojo')
