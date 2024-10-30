@@ -7,22 +7,11 @@ def create_database():
     
     # Create a cursor object to execute SQL queries
     cursor = conn.cursor()
-    
-    # Create the normal_listings table
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS normal_listings (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        address TEXT,
-        city TEXT,
-        age_range TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-    ''')
+
 
     # Create the premium_listings table
     cursor.execute('''
-    CREATE TABLE IF NOT EXISTS premium_listings (
+    CREATE TABLE IF NOT EXISTS dojos(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         address TEXT,
@@ -38,7 +27,17 @@ def create_database():
     );
     ''')
 
-
+    cursor.execute('''CREATE TABLE IF NOT EXISTS schedules (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            dojo_id INTEGER NOT NULL,
+            day_of_week TEXT NOT NULL,
+            start_time TIME NOT NULL,
+            end_time TIME NOT NULL,
+            instructor TEXT,
+            competition_only BOOLEAN,
+            FOREIGN KEY (dojo_id) REFERENCES dojos(id) ON DELETE CASCADE
+        );
+        ''')
     cursor.execute('''CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     email VARCHAR(100) NOT NULL UNIQUE,

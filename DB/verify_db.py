@@ -156,4 +156,4 @@ if __name__ == "__main__":
     #check_data()
     #clear_all_data(confirm=True)
     inspect_database('dojo_listings.db')
-    
+    #delete_db(confirm=True)    

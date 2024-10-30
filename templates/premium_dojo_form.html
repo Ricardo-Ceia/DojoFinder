@@ -65,13 +65,17 @@
 
         .form-container input[type="text"],
         .form-container input[type="email"],
-        .form-container input[type="number"] {
+        .form-container input[type="number"],
+        .form-container input[type="time"],
+        .form-container select {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
             border-radius: 5px;
             border: none;
             font-size: 16px;
+            background-color: #fff;
+            color: #272727;
         }
 
         .image-upload-group {
@@ -153,6 +157,62 @@
             color: #ff3333;
         }
 
+        .schedule-box {
+            width: 90%;
+            border: 1px dashed #fff;
+            padding: 20px;
+            margin:20px;
+        }
+        /* Schedule specific styles */
+        .schedule-section {
+            margin-top: -10px;
+        }
+
+        .schedule-h3{
+            color:antiquewhite;
+            font-size: 20px;
+            margin-bottom: -10px;
+        }
+
+        .schedule-entry {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .delete-schedule {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #ff3333;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .delete-schedule:hover {
+            background-color: #cc0000;
+        }
+
+        .add-schedule-btn {
+            background-color: #444;
+            margin-bottom: 20px;
+        }
+
+        .schedule-entry label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -181,6 +241,15 @@
                 <input name="sensei" type="text" placeholder="Sensei">
                 <input name="renowned_athletes" type="text" placeholder="Renowned Athletes">
 
+                <!-- Schedule Section -->
+                <div class="schedule-box">
+                    <div class="schedule-section">
+                        <h3 class="schedule-h3">Class Schedule</h3>
+                        <button type="button" class="btn add-schedule-btn" onclick="addScheduleEntry()">Add Class Schedule</button>
+                        <div id="scheduleEntries"></div>
+                    </div>
+                </div>
+                
                 <!-- Dojo Image Upload -->
                 <div class="image-upload-group">
                     <label>Dojo Image</label>
@@ -244,6 +313,48 @@
         setupImagePreview('dojoImage', 'dojoPreview', 'dojoImageContainer');
         setupImagePreview('senseiImage', 'senseiPreview', 'senseiImageContainer');
         setupImagePreview('athletesImage', 'athletesPreview', 'athletesImageContainer');
+
+        // Function to add a new schedule entry
+        function addScheduleEntry() {
+            const scheduleEntries = document.getElementById('scheduleEntries');
+            const entryIndex = scheduleEntries.children.length;
+            console.log("This is the entryIndex:" + entryIndex)
+            const entry = document.createElement('div');
+            entry.className = 'schedule-entry';
+            entry.innerHTML = `
+                <button type="button" class="delete-schedule" onclick="deleteScheduleEntry(this)">×</button>
+                
+                <label>Day of Week</label>
+                <select name="schedules[${entryIndex}][day_of_week]" required>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+
+                <label>Start Time</label>
+                <input type="time" name="schedules[${entryIndex}][start_time]" required>
+                <label>End Time</label>
+                <input type="time" name="schedules[${entryIndex}][end_time]" required>
+                <label>Instructor</label>
+                <input type="text" name="schedules[${entryIndex}][instructor]" placeholder="Instructor name" required>
+
+                <label>
+                    <input type="checkbox" name="schedules[${entryIndex}][competition_only]">
+                    Competition Class Only
+                </label>
+            `;
+
+            scheduleEntries.appendChild(entry);
+        }
+
+        // Function to delete a schedule entry
+        function deleteScheduleEntry(button) {
+            button.parentElement.remove();
+        }
 
         // Function to close the form
         function closeForm() {
