@@ -3,75 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="/static/styles.css">
-    <title>Dojo Listings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dojo-container {
+            max-width: 97vw;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .dojo {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 16px;
+            padding: 24px 0;
+            border-bottom: 1px solid #ebebeb;
+            position: relative;
+        }
+
+        .dojo-image {
+            width: 300px;
+            height: 200px;
+            border-radius: 12px;
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+
+        .dojo-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .dojo-title {
+            text-decoration: none;
+            font-size: 25px;
+            font-weight: 700;
+            color: #222222;
+            padding-bottom: 20px;
+            font-family: Popins, sans-serif;
+        }
+
+        .dojo-title:hover {
+            text-decoration: underline;
+        }
+
+        .dojo-details {
+            margin-top: 10px;
+            color: #717171;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dojo-details a {
+            text-decoration: none;  /* Remove underline from link */
+            color: inherit;  /* Inherit color from parent */
+        }
+
+        .dojo-details i {
+            font-size: 20px;
+            color: red;
+        }        
+
+        .price {
+            position: absolute;
+            right: 0;
+            bottom: 24px;
+            font-size: 30px;
+            font-weight: 500;
+        }
+
+        .price span {
+            font-weight: 400;
+            color: #717171;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 <body>
     <div class="dojo-container">
-        <!-- Premium Dojos -->
-        {% for dojo in premium_dojos %}
-            <div class="dojo premium">
-                <span class="recommended-tag">Recommended</span>
-                <div class="dojo-image" style="background-image: url('{{ dojo[7] }}');"></div>
-                <div class="dojo-details">
-                    <h3 class="dojo-name">{{ dojo[0] }}</h3>
-                    <p class="dojo-address">
-                        <a href="https://www.google.com/maps/search/?api=1&query=Example+Address" target="_blank" class="address-link">
-                            <i class="fas fa-map-marker-alt google-maps-icon"></i>
-                        </a>
-                        <span>{{dojo[1]}}</span>
-                    </p>
-                    <p class="dojo-age-range">
-                        <strong>Age Range:</strong> <span class="age-range-value">{{ dojo[2] }}</span>
-                    </p>
-                    <p class="contact-info dojo-email">
-                        <i class="fas fa-envelope"></i> {{ dojo[5] }}
-                    </p>
-                    <p class="contact-info dojo-phone">
-                        <i class="fas fa-phone"></i> {{ dojo[6] }}
-                    </p>
-                    {% if dojo[8] %}
-                    <p class="contact-info dojo-website">
-                        <i class="fas fa-globe"></i>
-                        <a href="{{ dojo[8] }}" target="_blank" class="website-link">{{ dojo[8] }}</a>
-                    </p>
-                    {% endif %}
-                    {% if dojo[3] or dojo[4] %}
-                    <div class="avatars-container">
-                        {% if dojo[4] %}
-                        <div class="dojo-info athlete">
-                            <img src="{{ dojo[4] }}" alt="Renowned Athlete Avatar" class="avatar">
-                            <p class="dojo-athletes">Athlete</p>
-                        </div>
-                        {% endif %}
-                        {% if dojo[3] %}
-                        <div class="dojo-info sensei">
-                            <img src="{{ dojo[3] }}" alt="Sensei Avatar" class="avatar">
-                            <p class="dojo-sensei">Sensei</p>
-                        </div>
-                        {% endif %}
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        {% endfor %}
-
-        <!-- Normal Dojos -->
-        {% for dojo in normal_dojos %}
+        {% for dojo in dojos %}
             <div class="dojo">
-                <div class="dojo-image" style="background-image: url('../static/background_image_card2.webp');"></div>
-                <div class="dojo-details">
-                    <h3 class="dojo-name">{{ dojo[0] }}</h3>
-                    <p class="dojo-address">
-                        <a href="https://www.google.com/maps/search/?api=1&query=Example+Address" target="_blank" class="address-link">
-                            <i class="fas fa-map-marker-alt google-maps-icon"></i>
-                        </a>
-                        <span>{{dojo[1]}}</span>
-                    </p>
-                    <p class="dojo-age-range">
-                        <strong>Age Range:</strong> <span class="age-range-value">{{ dojo[2] }}</span>
-                    </p>
+                <div class="dojo-image" style="background-image: url('{{ dojo[3] }}');"></div>
+                <div class="dojo-content">
+                    <div>
+                        <a class="dojo-title" href="/dojo_details">{{dojo[0]}}</a>
+                        <div class="dojo-details">
+                            <a href="https://www.google.com/maps?q={{ dojo[1] }}" target="_blank">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </a>
+                            {{dojo[1]}}
+                        </div>
+                    </div>
+                    <div class="price">
+                        $150 <span>/Month</span>
+                    </div>
                 </div>
             </div>
         {% endfor %}

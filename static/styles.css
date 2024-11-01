@@ -1,7 +1,6 @@
 /* Base styles */
 body {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
     line-height: 1.6;
     color: #333;
 }
@@ -157,7 +156,13 @@ nav ul li a {
     color: #333;
 }
 
-.card-header h2 {
+.card-h2 {
+    text-align: center;
+    margin: 0;
+    color: #333;
+}
+
+h2{
     margin: 0;
     color: #333;
 }
@@ -186,158 +191,6 @@ nav ul li a {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Dojo Listings */
-.dojo-listings {
-    padding: 4rem 2rem;
-}
-
-.dojo-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    justify-content: center;
-    background-color: #565657;
-    border-top: 6px solid #fff;
-}
-
-.dojo {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    flex: 1 1 calc(33.333% - 40px); /* Allow cards to grow and shrink, with a base width of 33.333% minus the gap */
-    max-width: calc(33.333% - 40px); /* Ensure the max-width matches the flex basis */
-    transition: transform 0.2s;
-    position: relative; /* Ensure the span is positioned relative to the listing */
-}
-
-.dojo:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
-}
-
-/* Container for dojo cards */
-.dojo-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    width: 60%;
-    padding: 20px;
-}
-
-
-.dojo:hover {
-    transform: scale(1.05);
-}
-
-.dojo-image {
-    height: 150px;
-    background-size: cover;
-    background-position: center;
-    border-radius: 10px;
-}
-
-.dojo-details {
-    padding: 10px 0;
-    display: flex;
-    flex-direction: column;
-}
-
-.dojo-name {
-    font-size: 1.5em;
-    margin: 0 0 10px;
-    color: #333;
-}
-
-.premium .recommended-tag {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: #8bc34a;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-weight: bold;
-    font-size: 1em;
-}
-
-.dojo-sensei, .dojo-athletes, .dojo-email, .dojo-phone, .dojo-address, .dojo-age-range {
-    margin: 5px 0;
-}
-
-.avatars-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 15px;
-    width: 100%;
-}
-
-.avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.dojo-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-}
-
-.dojo-info.sensei {
-    order: 1;  /* Moves sensei to the right */
-}
-
-.dojo-info.athlete {
-    order: 2;  /* Keeps athlete on the left */
-}
-
-.address-link {
-    color: #4285F4; /* Google's default blue color */
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.address-link:hover {
-    color: #DB4437; /* Google Maps' red color */
-}
-
-.google-maps-icon {
-    transition: color 0.3s ease;
-}
-
-.address-link:hover .google-maps-icon {
-    color: #DB4437; /* Makes the icon change color too */
-}
-
-/* Premium dojo styles */
-.premium {
-    border: 2px solid greenyellow;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .dojo-container {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    }
-}
-
-@media (max-width: 480px) {
-    .dojo-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .dojo {
-        max-width: 100%;
-    }
-}
 /* Footer Styles */
 footer {
     background-color: #fff;

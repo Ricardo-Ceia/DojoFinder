@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Dojo Details</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            width: 100%;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+        }
+
+        .dojo-name {
+            width: 100%;
+            text-align: center;
+            color: #333;
+            font-size: 2.5em;
+            padding: 20px 0;
+            background-color: #f4f4f4;
+            margin-bottom: 0;
+        }
+
+        .dojo-photo {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.3s ease;
+        }
+
+        .dojo-photo:hover {
+            transform: scale(1.01);
+        }
+
+        .dojo-info {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .info-section {
+            width: 100%;
+            padding: 20px;
+            background-color: #f7f7f7;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-section h2 {
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .dojo-address, .dojo-contact {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .dojo-address i, .dojo-contact i {
+            margin-right: 10px;
+            color: #0073bb;
+        }
+
+        .dojo-schedules {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .dojo-schedules th, .dojo-schedules td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .dojo-schedules th {
+            background-color: #f0f0f0;
+            text-transform: uppercase;
+        }
+
+        .dojo-website {
+            display: inline-block;
+            color: #0073bb;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+
+        .dojo-website::before {
+            content: "Visit Website";
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .dojo-photo {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="dojo-name">Escola de Judo Nuno Delgado</h1>
+        
+        <img class="dojo-photo" src="../static/Escola_de_Judo_Nuno_Delgado_Telheiras.jpg" alt="Dojo Exterior">
+        
+        <div class="dojo-info">
+            <section class="info-section">
+                <h2>Location</h2>
+                <p class="dojo-address">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Rua Prof. João Barreira, 1, 1600-477 Lisboa
+                </p>
+            </section>
+
+            <section class="info-section">
+                <h2>Class Schedule</h2>
+                <table class="dojo-schedules">
+                    <thead>
+                        <tr>
+                            <th>Monday</th>
+                            <th>Tuesday</th>
+                            <th>Wednesday</th>
+                            <th>Thursday</th>
+                            <th>Friday</th>
+                            <th>Saturday</th>
+                            <th>Sunday</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>10:00-11:00
+                                <br>Class age: 10-15
+                            </td>
+                            <td>Not Available</td>
+                            <td>12:00-13:00
+                                <br>Class age: 10-100
+                            </td>
+                            <td>10:00-11:00
+                                <br>Class age: 10-15
+                            </td>
+                            <td>Not Available</td>
+                            <td>Not Available</td>
+                            <td>Not Available</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="info-section">
+                <h2>Contact Information</h2>
+                <div class="dojo-contact">
+                    <a class="dojo-website" href="https://www.nunodelgado.net/"></a>
+                </div>
+                <div class="dojo-contact">
+                    <i class="fas fa-envelope"></i>
+                    <p>escola_de_judo_@fake_email.pt</p>
+                </div>
+                <div class="dojo-contact">
+                    <i class="fas fa-phone"></i>
+                    <p>924254289</p>
+                </div>
+                <div class="dojo-contact">
+                    <p>Head Instructor: Bruno Gomes</p>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

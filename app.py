@@ -27,19 +27,17 @@ def get_dojos_by_city(city):
     conn = sqlite3.connect('./DB/dojo_listings.db')
     cursor = conn.cursor()
 
-    cursor.execute("""SELECT name, address, age_range FROM normal_listings WHERE city LIKE ?""", ('%' + city.strip() + '%',))
-    normal = cursor.fetchall()
-
-    cursor.execute("""SELECT name, address, age_range, sensei, athletes, email, phone, image_path, website FROM premium_listings WHERE city LIKE ?""", ('%' + city.strip() + '%',))
-    premium_dojos = cursor.fetchall()
+    cursor.execute("""SELECT name, address, age_range, sensei_path, athletes_path, email, phone, image_path, website FROM dojos WHERE city LIKE ?""", ('%' + city.strip() + '%',))
+    dojos = cursor.fetchall()
     conn.close()
 
-    dojos={
-        'normal':normal,
-        'premium':premium_dojos
-    }
+    print(dojos)
     
     return dojos
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route('/get_dojos', methods=['POST'])
 def get_dojos():
@@ -48,7 +46,7 @@ def get_dojos():
     dojos = get_dojos_by_city(city)
     
     # Render a partial template containing just the dojo list
-    return render_template('dojo_list.html',normal_dojos=dojos['normal'], premium_dojos=dojos['premium'])   
+    return render_template('dojo_list.html',dojos=dojos)   
 
 
 @app.route('/paywall')
@@ -63,6 +61,11 @@ def add_dojo():
 @app.route('/premium_dojo_form',methods=['GET'])
 def premiun_dojo_form():
     return render_template('premium_dojo_form.html')
+
+
+@app.route('/dojo_details',methods=['GET'])
+def dojo_details():
+    return render_template('dojo_details.html')
 
 @app.route('/add_dojo_to_premium', methods=['POST'])
 def add_dojo_to_premium():
