@@ -27,7 +27,7 @@ def get_dojos_by_city(city):
     conn = sqlite3.connect('./DB/dojo_listings.db')
     cursor = conn.cursor()
 
-    cursor.execute("""SELECT name, address, age_range, sensei_path, athletes_path, email, phone, image_path, website FROM dojos WHERE city LIKE ?""", ('%' + city.strip() + '%',))
+    cursor.execute("""SELECT name, address, website, email, image_path FROM dojos WHERE city LIKE ?""", ('%' + city.strip() + '%',))
     dojos = cursor.fetchall()
     conn.close()
 
@@ -135,7 +135,7 @@ def add_dojo_to_premium():
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             name, address, city, age_range, website,
-            phone, email,dojo_image_path, sensei_image_path, athletes_image_path
+            phone, email, sensei_image_path, athletes_image_path,dojo_image_path
         ))
         conn.commit()
 

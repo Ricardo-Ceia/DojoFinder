@@ -34,7 +34,6 @@
         .dojo-content {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
 
         .dojo-title {
@@ -42,7 +41,7 @@
             font-size: 25px;
             font-weight: 700;
             color: #222222;
-            padding-bottom: 20px;
+            padding-bottom: 15px;
             font-family: Popins, sans-serif;
         }
 
@@ -56,19 +55,80 @@
             font-size: 0.9em;
             margin-bottom: 8px;
             display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .dojo-address {
+            display: flex;
             align-items: center;
             gap: 5px;
+            padding-left: 3px;  /* Added padding to align with website */
         }
 
-        .dojo-details a {
-            text-decoration: none;  /* Remove underline from link */
-            color: inherit;  /* Inherit color from parent */
+        .dojo-website {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding-left: 3px;  /* Adjusted padding to match the address alignment */
         }
-
-        .dojo-details i {
+        
+        #location-icon {
             font-size: 20px;
             color: red;
+            width: 20px;  /* Added fixed width */
+            display: flex;
+            justify-content: center;  /* Center the icon */
+            text-decoration: none;
         }        
+
+        #globe-icon {
+            font-size: 15px;
+            width: 20px;  /* Added fixed width to match location icon */
+            color: black;
+            display: flex;
+            justify-content: center;  /* Center the icon */
+        }
+
+        #email-icon {
+            font-size: 15px;
+            width: 20px;
+            display: flex;
+            justify-content: center;
+            color: black;
+        }
+
+        .dojo-email {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding-left: 5px;
+        }
+
+
+        .dojo-address-anchor{
+            text-decoration: none;
+        }
+
+        .dojo-email-anchor {
+            text-decoration: none;
+            color: blue;
+        }
+
+        .dojo-email-anchor:hover {
+            text-decoration: underline;
+        }
+
+        .dojo-website-anchor {
+            text-decoration: none;
+            color: #717171;;
+        }
+
+        .dojo-website-anchor:hover {
+            text-decoration: underline;
+            color: #222222;
+        }
+
 
         .price {
             position: absolute;
@@ -89,17 +149,25 @@
     <div class="dojo-container">
         {% for dojo in dojos %}
             <div class="dojo">
-                <div class="dojo-image" style="background-image: url('{{ dojo[3] }}');"></div>
+                <div class="dojo-image" style="background-image: url('{{ dojo[4] }}');"></div>
                 <div class="dojo-content">
-                    <div>
                         <a class="dojo-title" href="/dojo_details">{{dojo[0]}}</a>
                         <div class="dojo-details">
-                            <a href="https://www.google.com/maps?q={{ dojo[1] }}" target="_blank">
-                                <i class="fa-solid fa-location-dot"></i>
-                            </a>
-                            {{dojo[1]}}
+                            <div class="dojo-address">
+                                <a class="dojo-address-anchor" href="https://www.google.com/maps?q={{ dojo[1] }}" target="_blank">
+                                    <i class="fa-solid fa-location-dot" id="location-icon"></i>
+                                </a>
+                                {{dojo[1]}}
+                            </div>
+                            <div class="dojo-website">
+                                <i class="fa-solid fa-globe" id="globe-icon"></i>
+                                <a class="dojo-website-anchor" href="{{ dojo[2] }}" target="_blank">{{ dojo[2] }}</a>
+                            </div>
+                            <div class="dojo-email">
+                                <i class="fa-solid fa-envelope" id="email-icon"></i>
+                                <a class="dojo-email-anchor" href="mailto:{{ dojo[3] }}">{{ dojo[3] }}</a>
+                            </div>
                         </div>
-                    </div>
                     <div class="price">
                         $150 <span>/Month</span>
                     </div>
