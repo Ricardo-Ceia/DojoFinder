@@ -27,7 +27,7 @@ def get_dojos_by_city(city):
     conn = sqlite3.connect('./DB/dojo_listings.db')
     cursor = conn.cursor()
 
-    cursor.execute("""SELECT name, address, website, email, image_path FROM dojos WHERE city LIKE ?""", ('%' + city.strip() + '%',))
+    cursor.execute("""SELECT name, address, website, email, image_path, price_per_month FROM dojos WHERE city LIKE ?""", ('%' + city.strip() + '%',))
     dojos = cursor.fetchall()
     conn.close()
 
@@ -77,6 +77,7 @@ def add_dojo_to_premium():
     print(f"This is the website:{website}")
     email = request.form.get('email')
     phone = request.form.get('phone')
+    price = request.form.get('class_price') 
     # Get the image files
     dojo_image = request.files.get('dojo_image')
     sensei_image = request.files.get('sensei_image')
@@ -130,12 +131,12 @@ def add_dojo_to_premium():
 
         cursor.execute('''
             INSERT INTO dojos (
-                name,address,city,age_range,website,phone,email,sensei_path,athletes_path,image_path
+                name,address,city,age_range,website,phone,email,sensei_path,athletes_path,image_path,price_per_month
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
         ''', (
             name, address, city, age_range, website,
-            phone, email, sensei_image_path, athletes_image_path,dojo_image_path
+            phone, email, sensei_image_path, athletes_image_path,dojo_image_path,price
         ))
         conn.commit()
 

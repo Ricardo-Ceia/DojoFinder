@@ -119,6 +119,47 @@
             display: none;
         }
 
+        .price-input-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .price-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px !important;
+            border: none !important;
+            font-size: 16px !important;
+            background-color: #fff !important;
+            color: #272727 !important;
+        }
+
+        /* Remove arrows for Chrome, Safari, Edge, Opera */
+        .price-input::-webkit-outer-spin-button,
+        .price-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .price-symbol {
+            position: absolute;
+            right: 40vw;
+            top: 35%;
+            transform: translateY(-50%);
+            color: #666;
+            font-weight: bold;
+        }
+
+        /* Style for the input when focused */
+        .price-input:focus {
+            outline: none;
+        }
+
+        /* Style for the placeholder */
+        .price-input::placeholder {
+            color: #999;
+        }
+
         .add-dojo-btn {
             background-color: #ff3333;
             color: white;
@@ -237,7 +278,19 @@
                 <input name="website" type="text" placeholder="Website">
                 <input name="email" type="email" placeholder="Email" required>
                 <input name="phone" type="text" placeholder="Phone number" required>
-
+                <div class="price-input-container">
+                    <input 
+                        name="class_price" 
+                        type="number" 
+                        step="1"
+                        min="0"
+                        class="price-input" 
+                        placeholder="0" 
+                        required
+                        onchange="formatPrice(this)"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <span class="price-symbol">€/Month</span>
+                </div>
                 <!-- Schedule Section -->
                 <div class="schedule-box">
                     <div class="schedule-section">
@@ -351,6 +404,15 @@
         // Function to delete a schedule entry
         function deleteScheduleEntry(button) {
             button.parentElement.remove();
+        }
+
+        function formatPrice(input){
+            let value = input.value.replace(/\D/g, "");
+            value = parseInt(value);
+
+            if(!isNan(value)){
+                input.value = value
+            }
         }
 
         // Function to close the form
