@@ -16,7 +16,6 @@ def create_database():
         name TEXT NOT NULL,
         address TEXT,
         city TEXT,
-        age_range TEXT,
         website TEXT,
         phone TEXT,
         email TEXT,
@@ -36,6 +35,7 @@ def create_database():
             end_time TIME NOT NULL,
             instructor TEXT,
             competition_only BOOLEAN,
+            age_range TEXT,
             FOREIGN KEY (dojo_id) REFERENCES dojos(id) ON DELETE CASCADE
         );
         ''')

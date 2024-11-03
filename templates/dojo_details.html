@@ -7,178 +7,259 @@
     <title>Dojo Details</title>
     <style>
         * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            width: 100%;
-        }
+:root {
+    --primary-color: #333;
+    --secondary-color: #0073bb;
+    --background-light: #f4f4f4;
+    --background-lighter: #f7f7f7;
+    --border-color: #e0e0e0;
+    --spacing-sm: 10px;
+    --spacing-md: 20px;
+    --font-size-base: 16px;
+    --font-size-lg: 2.5em;
+}
 
-        .container {
-            width: 100%;
-            max-width: 100%;
-            padding: 0;
-        }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--primary-color);
+    width: 100%;
+    font-size: var(--font-size-base);
+}
 
-        .dojo-name {
-            width: 100%;
-            text-align: center;
-            color: #333;
-            font-size: 2.5em;
-            padding: 20px 0;
-            background-color: #f4f4f4;
-            margin-bottom: 0;
-        }
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+}
 
-        .dojo-photo {
-            width: 100%;
-            height: 500px;
-            object-fit: cover;
-            object-position: center;
-            transition: transform 0.3s ease;
-        }
+.dojo-name {
+    width: 100%;
+    text-align: center;
+    color: var(--primary-color);
+    font-size: var(--font-size-lg);
+    padding: var(--spacing-md) 0;
+    background-color: var(--background-light);
+    margin-bottom: 0;
+}
 
-        .dojo-photo:hover {
-            transform: scale(1.01);
-        }
+.dojo-photo {
+    width: 100%;
+    height: 60vh;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+}
 
-        .dojo-info {
-            width: 100%;
-            display: flex;
-            flex-wrap: wrap;
-        }
+.dojo-photo:hover {
+    transform: scale(1.01);
+}
 
-        .info-section {
-            width: 100%;
-            padding: 20px;
-            background-color: #f7f7f7;
-            border-bottom: 1px solid #e0e0e0;
-        }
+.dojo-info {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+}
 
-        .info-section h2 {
-            margin-bottom: 15px;
-            border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 10px;
-        }
+.info-section {
+    padding: var(--spacing-md);
+    background-color: var(--background-lighter);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-        .dojo-address, .dojo-contact {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+.info-section h2 {
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: var(--spacing-sm);
+    font-size: calc(var(--font-size-base) * 1.5);
+}
 
-        .dojo-address i, .dojo-contact i {
-            margin-right: 10px;
-            color: #0073bb;
-        }
+.dojo-address, .dojo-contact {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+    flex-wrap: wrap;
+}
 
-        .dojo-schedules {
-            width: 100%;
-            border-collapse: collapse;
-        }
+.dojo-address i, .dojo-contact i {
+    margin-right: var(--spacing-sm);
+    color: var(--secondary-color);
+    min-width: 20px;
+}
 
-        .dojo-schedules th, .dojo-schedules td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
+.dojo-schedules {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--spacing-md);
+    overflow-x: auto;
+    display: block;
+}
 
-        .dojo-schedules th {
-            background-color: #f0f0f0;
-            text-transform: uppercase;
-        }
+.dojo-schedules th, .dojo-schedules td {
+    border: 1px solid var(--border-color);
+    padding: var(--spacing-sm);
+    text-align: center;
+}
 
-        .dojo-website {
-            display: inline-block;
-            color: #0073bb;
-            text-decoration: none;
-            margin-bottom: 10px;
-        }
+.dojo-schedules th {
+    background-color: var(--background-light);
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
 
-        .dojo-website::before {
-            content: "Visit Website";
-            text-decoration: underline;
-        }
+.dojo-website {
+    display: inline-block;
+    color: var(--secondary-color);
+    text-decoration: none;
+    margin: var(--spacing-sm) 0;
+    transition: color 0.3s ease;
+}
 
-        @media (max-width: 768px) {
-            .dojo-photo {
-                height: 300px;
-            }
-        }
+.dojo-website:hover {
+    color: darken(var(--secondary-color), 10%);
+}
+
+.dojo-website::before {
+    content: "Visit Website";
+    text-decoration: underline;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1200px) {
+    .container {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --font-size-lg: 2em;
+        --spacing-md: 15px;
+    }
+
+    .dojo-photo {
+        height: 40vh;
+    }
+
+    .dojo-info {
+        grid-template-columns: 1fr;
+    }
+
+    .info-section {
+        padding: var(--spacing-sm);
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --font-size-lg: 1.8em;
+        --font-size-base: 14px;
+        --spacing-md: 10px;
+    }
+
+    .dojo-photo {
+        height: 30vh;
+    }
+
+    .dojo-address, .dojo-contact {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dojo-address i, .dojo-contact i {
+        margin-bottom: var(--spacing-sm);
+    }
+}
+
+/* Print Styles */
+@media print {
+    .dojo-photo {
+        height: auto;
+        max-height: 300px;
+    }
+
+    .dojo-website::before {
+        content: attr(href);
+    }
+}
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="dojo-name">Escola de Judo Nuno Delgado</h1>
-        
-        <img class="dojo-photo" src="../static/Escola_de_Judo_Nuno_Delgado_Telheiras.jpg" alt="Dojo Exterior">
-        
-        <div class="dojo-info">
-            <section class="info-section">
-                <h2>Location</h2>
-                <p class="dojo-address">
-                    <i class="fas fa-map-marker-alt"></i>
-                    Rua Prof. João Barreira, 1, 1600-477 Lisboa
-                </p>
-            </section>
+        <div class="container">
+            <h1 class="dojo-name">{{dojo_details[0]}}</h1>
+            
+            <img class="dojo-photo" src="{{dojo_details[6]}}" alt="Dojo Exterior">
+            
+            <div class="dojo-info">
+                <section class="info-section">
+                    <h2>Location</h2>
+                    <p class="dojo-address">
+                        <i class="fas fa-map-marker-alt"></i>
+                        {{dojo_details[1]}}
+                    </p>
+                </section>
 
-            <section class="info-section">
-                <h2>Class Schedule</h2>
-                <table class="dojo-schedules">
-                    <thead>
-                        <tr>
-                            <th>Monday</th>
-                            <th>Tuesday</th>
-                            <th>Wednesday</th>
-                            <th>Thursday</th>
-                            <th>Friday</th>
-                            <th>Saturday</th>
-                            <th>Sunday</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>10:00-11:00
-                                <br>Class age: 10-15
-                            </td>
-                            <td>Not Available</td>
-                            <td>12:00-13:00
-                                <br>Class age: 10-100
-                            </td>
-                            <td>10:00-11:00
-                                <br>Class age: 10-15
-                            </td>
-                            <td>Not Available</td>
-                            <td>Not Available</td>
-                            <td>Not Available</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
+                <section class="info-section">
+                    <h2>Class Schedule</h2>
+                    <table class="dojo-schedules">
+                        <thead>
+                            <tr>
+                                <th>Monday</th>
+                                <th>Tuesday</th>
+                                <th>Wednesday</th>
+                                <th>Thursday</th>
+                                <th>Friday</th>
+                                <th>Saturday</th>
+                                <th>Sunday</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10:00-11:00
+                                    <br>Class age: 10-15
+                                </td>
+                                <td>Not Available</td>
+                                <td>12:00-13:00
+                                    <br>Class age: 10-100
+                                </td>
+                                <td>10:00-11:00
+                                    <br>Class age: 10-15
+                                </td>
+                                <td>Not Available</td>
+                                <td>Not Available</td>
+                                <td>Not Available</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
 
-            <section class="info-section">
-                <h2>Contact Information</h2>
-                <div class="dojo-contact">
-                    <a class="dojo-website" href="https://www.nunodelgado.net/"></a>
-                </div>
-                <div class="dojo-contact">
-                    <i class="fas fa-envelope"></i>
-                    <p>escola_de_judo_@fake_email.pt</p>
-                </div>
-                <div class="dojo-contact">
-                    <i class="fas fa-phone"></i>
-                    <p>924254289</p>
-                </div>
-                <div class="dojo-contact">
-                    <p>Head Instructor: Bruno Gomes</p>
-                </div>
-            </section>
+                <section class="info-section">
+                    <h2>Contact Information</h2>
+                    <div class="dojo-contact">
+                        <a class="dojo-website" href="{{dojo_details[2]}}"></a>
+                    </div>
+                    <div class="dojo-contact">
+                        <i class="fas fa-envelope"></i>
+                        <p>{{dojo_details[3]}}</p>
+                    </div>
+                    <div class="dojo-contact">
+                        <i class="fas fa-phone"></i>
+                        <p>{{dojo_details[7]}}</p>
+                    </div>
+                    <div class="dojo-contact">
+                        <p>Head Instructor: Bruno Gomes</p>
+                    </div>
+                </section>
+            </div>
         </div>
-    </div>
 </body>
 </html>

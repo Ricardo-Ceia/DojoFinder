@@ -35,7 +35,7 @@ def check_data():
     conn = sqlite3.connect('dojo_listings.db')
     cursor = conn.cursor()
 
-    cursor.execute('SELECT * FROM dojos;')
+    cursor.execute('SELECT * FROM schedules;')
     # Fetch all results
     rows = cursor.fetchall()
 
@@ -152,5 +152,6 @@ if __name__ == "__main__":
     #check_data()
     #clear_all_data(confirm=True)
     #delete_by_id(1)
+    #delete_by_id(2)
     #inspect_database('dojo_listings.db')
-    #delete_db(confirm=True)    
+    delete_db(confirm=True)    

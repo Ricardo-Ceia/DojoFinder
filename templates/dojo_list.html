@@ -4,18 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .dojo-container {
-            max-width: 97vw;
+            width: 100%;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
             gap: 24px;
+            padding: 0 16px;
         }
 
         .dojo {
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: minmax(200px, 300px) 1fr;
             gap: 16px;
             padding: 24px 0;
             border-bottom: 1px solid #ebebeb;
@@ -23,7 +31,7 @@
         }
 
         .dojo-image {
-            width: 300px;
+            width: 100%;
             height: 200px;
             border-radius: 12px;
             background-size: cover;
@@ -34,11 +42,12 @@
         .dojo-content {
             display: flex;
             flex-direction: column;
+            width: 100%;
         }
 
         .dojo-title {
             text-decoration: none;
-            font-size: 25px;
+            font-size: clamp(18px, 4vw, 25px);
             font-weight: 700;
             color: #222222;
             padding-bottom: 15px;
@@ -57,56 +66,41 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            padding-bottom: 50px; /* Space for absolute positioned price */
         }
 
-        .dojo-address {
+        .dojo-address, .dojo-website, .dojo-email {
             display: flex;
             align-items: center;
             gap: 5px;
-            padding-left: 3px;  /* Added padding to align with website */
+            padding-left: 3px;
+            word-break: break-word;
         }
 
-        .dojo-website {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding-left: 3px;  /* Adjusted padding to match the address alignment */
+        .dojo-website-anchor, .dojo-email-anchor {
+            word-break: break-all;
         }
         
         #location-icon {
             font-size: 20px;
             color: red;
-            width: 20px;  /* Added fixed width */
+            width: 20px;
+            min-width: 20px;
             display: flex;
-            justify-content: center;  /* Center the icon */
+            justify-content: center;
             text-decoration: none;
         }        
 
-        #globe-icon {
-            font-size: 15px;
-            width: 20px;  /* Added fixed width to match location icon */
-            color: black;
-            display: flex;
-            justify-content: center;  /* Center the icon */
-        }
-
-        #email-icon {
+        #globe-icon, #email-icon {
             font-size: 15px;
             width: 20px;
+            min-width: 20px;
+            color: black;
             display: flex;
             justify-content: center;
-            color: black;
         }
 
-        .dojo-email {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding-left: 5px;
-        }
-
-
-        .dojo-address-anchor{
+        .dojo-address-anchor {
             text-decoration: none;
         }
 
@@ -121,7 +115,7 @@
 
         .dojo-website-anchor {
             text-decoration: none;
-            color: #717171;;
+            color: #717171;
         }
 
         .dojo-website-anchor:hover {
@@ -129,12 +123,11 @@
             color: #222222;
         }
 
-
         .price {
             position: absolute;
             right: 0;
             bottom: 24px;
-            font-size: 30px;
+            font-size: clamp(20px, 4vw, 30px);
             font-weight: 500;
         }
 
@@ -143,15 +136,60 @@
             color: #717171;
             font-size: 0.9em;
         }
+
+        .no-results {
+            text-align: center;
+            padding: 48px 16px;
+            color: #717171;
+            font-size: clamp(16px, 3vw, 1.2em);
+            font-family: Popins, sans-serif;
+        }
+
+        /* Media Queries */
+        @media screen and (max-width: 768px) {
+            .dojo {
+                grid-template-columns: 1fr;
+            }
+
+            .dojo-image {
+                height: 250px;
+            }
+
+            .price {
+                position: relative;
+                bottom: auto;
+                right: auto;
+                margin-top: 16px;
+            }
+
+            .dojo-details {
+                padding-bottom: 0;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .dojo-container {
+                padding: 0 12px;
+            }
+
+            .dojo {
+                padding: 16px 0;
+            }
+
+            .dojo-image {
+                height: 200px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="dojo-container">
+        {% if dojos|length > 0 %}
         {% for dojo in dojos %}
             <div class="dojo">
                 <div class="dojo-image" style="background-image: url('{{ dojo[4] }}');"></div>
                 <div class="dojo-content">
-                        <a class="dojo-title" href="/dojo_details">{{dojo[0]}}</a>
+                        <a class="dojo-title" href="/dojo_details?dojo_id={{ dojo[7] }}">{{dojo[0]}}</a>
                         <div class="dojo-details">
                             <div class="dojo-address">
                                 <a class="dojo-address-anchor" href="https://www.google.com/maps?q={{ dojo[1] }}" target="_blank">
@@ -174,6 +212,11 @@
                 </div>
             </div>
         {% endfor %}
+        {% else %}
+            <div class="no-results">
+                No dojos found
+            </div>
+        {% endif %}
     </div>
 </body>
 </html>

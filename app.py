@@ -21,17 +21,39 @@ app.config['MAIL_DEFAULT_SENDER'] = 'dojofinderinfo@gmail.com'  # Default sender
 
 mail = Mail(app)
 
-# Function to query the database
-def get_dojos_by_city(city):
-    print("This is the city recived by get_dojos_by_city:",city)
+#function to query the database to get the dojo details by their id
+def get_dojo_by_id(dojo_id):
     conn = sqlite3.connect('./DB/dojo_listings.db')
     cursor = conn.cursor()
 
-    cursor.execute("""SELECT name, address, website, email, image_path, price_per_month FROM dojos WHERE city LIKE ?""", ('%' + city.strip() + '%',))
-    dojos = cursor.fetchall()
+    cursor.execute('''SELECT name, address, website, email, sensei_path, athletes_path,image_path, phone,price_per_month FROM dojos WHERE id = ?''', (dojo_id,))
+    dojo = cursor.fetchone()
+
     conn.close()
 
-    print(dojos)
+    return dojo
+
+#function to query the databse to get the schedules by dojo_id
+def get_schedules_by_dojo_id(dojo_id):
+    conn = sqlite3.connect('./DB/dojo_listings.db')
+    cursor = conn.cursor()
+
+    cursor.execute('''SELECT day_of_week, start_time, end_time, instructor, competition_only, age_range FROM schedules WHERE dojo_id = ?''', (dojo_id,))
+    schedules = cursor.fetchall()
+
+    conn.close()
+
+    return schedules
+
+# Function to query the database
+def get_dojos_by_city(city):
+
+    conn = sqlite3.connect('./DB/dojo_listings.db')
+    cursor = conn.cursor()
+
+    cursor.execute("""SELECT name, address, website, email, image_path, price_per_month,phone,id FROM dojos WHERE city LIKE ?""", ('%' + city.strip() + '%',))
+    dojos = cursor.fetchall()
+    conn.close()
     
     return dojos
 
@@ -55,7 +77,6 @@ def paywall():
 
 @app.route('/add_dojo')
 def add_dojo():
-    print("This is the add_dojo function!")
     return render_template('./add_dojo_form.html')
 
 @app.route('/premium_dojo_form',methods=['GET'])
@@ -65,16 +86,21 @@ def premiun_dojo_form():
 
 @app.route('/dojo_details',methods=['GET'])
 def dojo_details():
-    return render_template('dojo_details.html')
+    dojo_id = request.args.get('dojo_id')
+    print(f"dojo_id:{dojo_id}")
+    schedules = get_schedules_by_dojo_id(dojo_id)
+    dojo_details = get_dojo_by_id(dojo_id)
+    print(f"schedules:{schedules}")
+    print(f"dojo_details:{dojo_details}")
+
+    return render_template('dojo_details.html',dojo_details=dojo_details,schedules=schedules)
 
 @app.route('/add_dojo_to_premium', methods=['POST'])
 def add_dojo_to_premium():
     name = request.form.get('dojo_name')
     address = request.form.get('address')
     city = request.form.get('city')
-    age_range = request.form.get('age_range')
     website = request.form.get('website') or None
-    print(f"This is the website:{website}")
     email = request.form.get('email')
     phone = request.form.get('phone')
     price = request.form.get('class_price') 
@@ -91,8 +117,9 @@ def add_dojo_to_premium():
         end_time = request.form.get(f'schedules[{index}][end_time]')
         instructor = request.form.get(f'schedules[{index}][instructor]')
         competition_only = request.form.get(f'schedules[{index}][competition_only]') == "on"
-
-        if not day_of_week or not start_time or not end_time or not instructor or not competition_only:
+        age_range = request.form.get(f'schedules[{index}][age_range]')
+        
+        if not day_of_week or not start_time or not end_time or not instructor or not competition_only or not age_range:
             break
 
         schedule_entries.append({
@@ -100,12 +127,11 @@ def add_dojo_to_premium():
             'start_time': start_time,
             'end_time': end_time,
             'instructor': instructor,
-            'competition_only': competition_only
+            'competition_only': competition_only,
+            'age_range': age_range
         })
 
         index += 1
-
-    print("This is the schedule_entries:",schedule_entries)
 
     # Check if main dojo image exists
     if dojo_image:
@@ -131,35 +157,36 @@ def add_dojo_to_premium():
 
         cursor.execute('''
             INSERT INTO dojos (
-                name,address,city,age_range,website,phone,email,sensei_path,athletes_path,image_path,price_per_month
+                name,address,city,website,phone,email,sensei_path,athletes_path,image_path,price_per_month
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            name, address, city, age_range, website,
+            name, address, city,website,
             phone, email, sensei_image_path, athletes_image_path,dojo_image_path,price
         ))
         conn.commit()
 
         #get the id of the dojo
         dojo_id = cursor.lastrowid
-        
+            
         for schedule_entry in schedule_entries:
             cursor.execute("""
             INSERT INTO schedules (
-                dojo_id, day_of_week, start_time, end_time, instructor, competition_only
-            ) VALUES (?, ?, ?, ?, ?, ?)
+                dojo_id, day_of_week, start_time, end_time, instructor, competition_only,age_range
+            ) VALUES (?, ?, ?, ?, ?, ?,?)
         """, (
             dojo_id,
             schedule_entry['day_of_week'],
             schedule_entry['start_time'],
             schedule_entry['end_time'],
             schedule_entry['instructor'],
-            schedule_entry['competition_only']
-        ))
+            schedule_entry['competition_only'],
+            schedule_entry['age_range']
+            ))
         conn.commit()
         conn.close()
 
-        return redirect('/home')
+        return redirect('/')
     
 
 
@@ -172,7 +199,6 @@ def confirm_dojo():
     city = request.args.get('city')
     age_range = request.args.get('age_range')
     
-    print(f"URL DATA: {dojo_name}, {address}, {city}, {age_range}")
     
     # Add error checking to ensure all parameters are present
     if not all([dojo_name, address, city, age_range]):
@@ -203,8 +229,6 @@ def add_dojo_to_normal():
     address = request.form.get('address')
     city = request.form.get('city')
     age_range = request.form.get('age_range')
-
-    print(f"Dojo Name: {dojo_name}, Address: {address}, City: {city}, Age Range: {age_range}")
 
     # Create a dictionary of parameters
     params = {
