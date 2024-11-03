@@ -159,9 +159,7 @@ def add_dojo_to_premium():
         conn.commit()
         conn.close()
 
-        return "Dojo successfully added to database", 200
-    else:
-        return "Dojo image upload failed", 400
+        return redirect('/home')
     
 
 
