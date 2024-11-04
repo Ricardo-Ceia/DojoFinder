@@ -21,6 +21,42 @@ app.config['MAIL_DEFAULT_SENDER'] = 'dojofinderinfo@gmail.com'  # Default sender
 
 mail = Mail(app)
 
+def send_dojo_data_email(dojo, schedules):
+    # Format dojo information
+    dojo_info = f"""
+    New Dojo Listing:
+    Name: {dojo['name']}
+    Address: {dojo['address']}
+    City: {dojo['city']}
+    Website: {dojo['website']}
+    Email: {dojo['email']}
+    Phone: {dojo['phone']}
+    Price per month: {dojo['price']}
+    """
+    
+    # Format schedule information
+    schedule_info = "\nSchedules:\n"
+    for schedule in schedules:
+        schedule_info += f"""
+        - Day: {schedule['day_of_week']}
+          Time: {schedule['start_time']} - {schedule['end_time']}
+          Instructor: {schedule['instructor']}
+          Competition Only: {schedule['competition_only']}
+          Age Range: {schedule['age_range']}
+        """
+
+    # Combine all information
+    email_body = dojo_info + schedule_info
+
+    # Create and send the email
+    msg = Message(
+        subject="New Dojo Listing",
+        recipients=["dojofinderinfo@gmail.com"],
+        body=email_body
+    )
+    mail.send(msg)
+     
+
 #function to query the database to get the dojo details by their id
 def get_dojo_by_id(dojo_id):
     conn = sqlite3.connect('./DB/dojo_listings.db')
@@ -71,10 +107,6 @@ def get_dojos():
     return render_template('dojo_list.html',dojos=dojos)   
 
 
-@app.route('/paywall')
-def paywall():
-    return render_template('./paywall.html')
-
 @app.route('/add_dojo')
 def add_dojo():
     return render_template('./add_dojo_form.html')
@@ -119,7 +151,7 @@ def add_dojo_to_premium():
         competition_only = request.form.get(f'schedules[{index}][competition_only]') == "on"
         age_range = request.form.get(f'schedules[{index}][age_range]')
         
-        if not day_of_week or not start_time or not end_time or not instructor or not competition_only or not age_range:
+        if not day_of_week or not start_time or not end_time or not instructor or not age_range:
             break
 
         schedule_entries.append({
@@ -186,42 +218,20 @@ def add_dojo_to_premium():
         conn.commit()
         conn.close()
 
+        dojo = {
+            'name': name,
+            'address': address,
+            'city': city,
+            'website': website,
+            'email': email,
+            'phone': phone,
+            'price': price
+        }
+
+        send_dojo_data_email(dojo, schedule_entries)
+
         return redirect('/')
     
-
-
-
-@app.route('/confirm_dojo')
-def confirm_dojo():
-    # Use request.args.get() for URL parameters
-    dojo_name = request.args.get('dojo_name')
-    address = request.args.get('address')
-    city = request.args.get('city')
-    age_range = request.args.get('age_range')
-    
-    
-    # Add error checking to ensure all parameters are present
-    if not all([dojo_name, address, city, age_range]):
-        return "Missing required parameters", 400
-    
-    try:
-        conn = sqlite3.connect('./DB/dojo_listings.db')
-        cursor = conn.cursor()
-
-        cursor.execute('''
-            INSERT INTO normal_listings (name, address, city, age_range)
-            VALUES (?, ?, ?, ?)
-        ''', (dojo_name, address, city, age_range))
-
-        conn.commit()
-        conn.close()
-        
-        return "Dojo successfully added to database", 200
-        
-    except Exception as e:
-        if conn:
-            conn.close()
-        return f"Error adding dojo to database: {str(e)}", 500
 
 @app.route('/add_dojo_to_normal', methods=['POST'])
 def add_dojo_to_normal():
