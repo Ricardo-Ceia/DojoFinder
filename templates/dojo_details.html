@@ -6,211 +6,236 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <title>Dojo Details</title>
     <style>
+        :root {
+            --primary-blue: #1a73e8;
+            --dark-blue: #1557b0;
+            --light-blue: #e8f0fe;
+            --primary-text: #202124;
+            --secondary-text: #5f6368;
+            --light-gray: #f8f9fa;
+            --medium-gray: #dadce0;
+            --dark-gray: #3c4043;
+            --white: #ffffff;
+            --box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            --hover-shadow: 0 4px 8px rgba(0,0,0,0.12);
+            --spacing-xs: clamp(4px, 1vw, 8px);
+            --spacing-sm: clamp(8px, 2vw, 16px);
+            --spacing-md: clamp(16px, 3vw, 24px);
+            --spacing-lg: clamp(24px, 4vw, 32px);
+        }
+
         * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-:root {
-    --primary-color: #333;
-    --secondary-color: #0073bb;
-    --background-light: #f4f4f4;
-    --background-lighter: #f7f7f7;
-    --border-color: #e0e0e0;
-    --spacing-sm: 10px;
-    --spacing-md: 20px;
-    --font-size-base: 16px;
-    --font-size-lg: 2.5em;
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.5;
+            color: var(--primary-text);
+            background-color: var(--light-gray);
+            min-height: 100vh;
+        }
 
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.6;
-    color: var(--primary-color);
-    width: 100%;
-    font-size: var(--font-size-base);
-}
+        .container {
+            width: min(95%, 1200px);
+            margin: var(--spacing-sm) auto;
+            background-color: var(--white);
+            box-shadow: var(--box-shadow);
+            border-radius: 8px;
+            overflow: hidden;
+        }
 
-.container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--spacing-md);
-}
+        .header-section {
+            position: relative;
+            background-color: var(--white);
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--medium-gray);
+        }
 
-.dojo-name {
-    width: 100%;
-    text-align: center;
-    color: var(--primary-color);
-    font-size: var(--font-size-lg);
-    padding: var(--spacing-md) 0;
-    background-color: var(--background-light);
-    margin-bottom: 0;
-}
+        .dojo-name {
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            color: var(--primary-text);
+            margin-bottom: var(--spacing-xs);
+            line-height: 1.2;
+        }
 
-.dojo-photo {
-    width: 100%;
-    height: 60vh;
-    object-fit: cover;
-    object-position: center;
-    transition: transform 0.3s ease;
-}
+        .photo-section {
+            position: relative;
+            height: clamp(200px, 40vw, 400px);
+            overflow: hidden;
+            background-color: var(--light-gray);
+        }
 
-.dojo-photo:hover {
-    transform: scale(1.01);
-}
+        .dojo-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-.dojo-info {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-md);
-    padding: var(--spacing-md);
-}
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 600px), 1fr));
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background-color: var(--white);
+        }
 
-.info-section {
-    padding: var(--spacing-md);
-    background-color: var(--background-lighter);
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+        .info-section {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+            border: 1px solid var(--medium-gray);
+        }
 
-.info-section h2 {
-    margin-bottom: 15px;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: var(--spacing-sm);
-    font-size: calc(var(--font-size-base) * 1.5);
-}
+        .section-title {
+            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+            color: var(--primary-text);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-xs);
+            border-bottom: 2px solid var(--medium-gray);
+        }
 
-.dojo-address, .dojo-contact {
-    display: flex;
-    align-items: center;
-    margin-bottom: var(--spacing-sm);
-    flex-wrap: wrap;
-}
+        .schedule-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: var(--spacing-sm);
+            scrollbar-width: thin;
+        }
 
-.dojo-address i, .dojo-contact i {
-    margin-right: var(--spacing-sm);
-    color: var(--secondary-color);
-    min-width: 20px;
-}
+        .schedule-table {
+            width: 100%;
+            min-width: 800px;
+            border-collapse: collapse;
+            margin-top: var(--spacing-sm);
+            font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+            border: 1px solid var(--medium-gray);
+        }
 
-.dojo-schedules {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: var(--spacing-md);
-    overflow-x: auto;
-    display: block;
-}
+        .schedule-table th,
+        .schedule-table td {
+            padding: var(--spacing-sm);
+            border: 1px solid var(--medium-gray);
+            text-align: left;
+        }
 
-.dojo-schedules th, .dojo-schedules td {
-    border: 1px solid var(--border-color);
-    padding: var(--spacing-sm);
-    text-align: center;
-}
+        .schedule-table th {
+            background-color: var(--light-blue);
+            font-weight: 600;
+            color: var(--primary-text);
+            position: sticky;
+            top: 0;
+        }
 
-.dojo-schedules th {
-    background-color: var(--background-light);
-    text-transform: uppercase;
-    font-size: 0.9em;
-}
+        .schedule-details {
+            padding: var(--spacing-xs);
+            min-width: 150px;
+        }
 
-.dojo-website {
-    display: inline-block;
-    color: var(--secondary-color);
-    text-decoration: none;
-    margin: var(--spacing-sm) 0;
-    transition: color 0.3s ease;
-}
+        .schedule-time {
+            color: var(--primary-text);
+            font-weight: 500;
+            white-space: nowrap;
+        }
 
-.dojo-website:hover {
-    color: darken(var(--secondary-color), 10%);
-}
+        .schedule-instructor {
+            color: var(--primary-blue);
+            font-weight: 500;
+            margin-top: var(--spacing-xs);
+        }
 
-.dojo-website::before {
-    content: "Visit Website";
-    text-decoration: underline;
-}
+        .schedule-age {
+            color: var(--secondary-text);
+            font-size: clamp(0.75rem, 1.3vw, 0.85rem);
+            margin-top: 4px;
+        }
 
-/* Responsive Breakpoints */
-@media (max-width: 1200px) {
-    .container {
-        max-width: 100%;
-    }
-}
+        .no-classes {
+            color: var(--secondary-text);
+            font-style: italic;
+        }
 
-@media (max-width: 768px) {
-    :root {
-        --font-size-lg: 2em;
-        --spacing-md: 15px;
-    }
+        .contact-info {
+            background-color: var(--light-gray);
+            padding: var(--spacing-md);
+            border-radius: 8px;
+        }
 
-    .dojo-photo {
-        height: 40vh;
-    }
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+            color: var(--primary-text);
+            font-size: clamp(0.9rem, 1.5vw, 1rem);
+        }
 
-    .dojo-info {
-        grid-template-columns: 1fr;
-    }
+        .contact-item i {
+            width: 24px;
+            color: #333;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
 
-    .info-section {
-        padding: var(--spacing-sm);
-    }
-}
+        .contact-item span {
+            word-break: break-word;
+        }
 
-@media (max-width: 480px) {
-    :root {
-        --font-size-lg: 1.8em;
-        --font-size-base: 14px;
-        --spacing-md: 10px;
-    }
+        .website-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: var(--spacing-sm);
+            transition: all 0.2s ease;
+            width: 100%;
+            gap: var(--spacing-xs);
+            font-size: clamp(0.9rem, 1.5vw, 1rem);
+        }
 
-    .dojo-photo {
-        height: 30vh;
-    }
+        .website-btn:hover {
+            background-color: var(--dark-blue);
+            box-shadow: var(--hover-shadow);
+        }
 
-    .dojo-address, .dojo-contact {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+        @media (max-width: 480px) {
+            .container {
+                width: 100%;
+                margin: 0;
+                border-radius: 0;
+            }
 
-    .dojo-address i, .dojo-contact i {
-        margin-bottom: var(--spacing-sm);
-    }
-}
+            .contact-info {
+                padding: var(--spacing-sm);
+            }
 
-/* Print Styles */
-@media print {
-    .dojo-photo {
-        height: auto;
-        max-height: 300px;
-    }
-
-    .dojo-website::before {
-        content: attr(href);
-    }
-}
+            .schedule-details {
+                min-width: 120px;
+            }
+        }
     </style>
 </head>
 <body>
-        <div class="container">
+    <div class="container">
+        <header class="header-section">
             <h1 class="dojo-name">{{dojo_details[0]}}</h1>
-            
-            <img class="dojo-photo" src="{{dojo_details[6]}}" alt="Dojo Exterior">
-            
-            <div class="dojo-info">
-                <section class="info-section">
-                    <h2>Location</h2>
-                    <p class="dojo-address">
-                        <i class="fas fa-map-marker-alt"></i>
-                        {{dojo_details[1]}}
-                    </p>
-                </section>
+        </header>
 
-                <section class="info-section">
-                    <h2>Class Schedule</h2>
-                    <table class="dojo-schedules">
+        <div class="photo-section">
+            <img class="dojo-photo" src="{{dojo_details[6]}}" alt="Dojo Exterior">
+        </div>
+
+        <div class="content-grid">
+            <div class="info-section">
+                <h2 class="section-title">Class Schedule</h2>
+                <div class="schedule-table-wrapper">
+                    <table class="schedule-table">
                         <thead>
                             <tr>
                                 <th>Monday</th>
@@ -224,42 +249,63 @@ body {
                         </thead>
                         <tbody>
                             <tr>
-                                <td>10:00-11:00
-                                    <br>Class age: 10-15
+                                {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+                                <td class="schedule-details">
+                                    {% set day_schedule = [] %}
+                                    {% for schedule in schedules %}
+                                        {% if schedule[0] == day %}
+                                            {% set _ = day_schedule.append(schedule) %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if day_schedule %}
+                                        {% for schedule in day_schedule %}
+                                            <div class="schedule-time">{{ schedule[1] }} - {{ schedule[2] }}</div>
+                                            <div class="schedule-instructor">
+                                                {{ schedule[3] }}
+                                            </div>
+                                            <div class="schedule-age">
+                                                Ages {{ schedule[5] }}
+                                            </div>
+                                            {% if not loop.last %}<hr>{% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="no-classes">Closed</span>
+                                    {% endif %}
                                 </td>
-                                <td>Not Available</td>
-                                <td>12:00-13:00
-                                    <br>Class age: 10-100
-                                </td>
-                                <td>10:00-11:00
-                                    <br>Class age: 10-15
-                                </td>
-                                <td>Not Available</td>
-                                <td>Not Available</td>
-                                <td>Not Available</td>
+                                {% endfor %}
                             </tr>
                         </tbody>
                     </table>
-                </section>
+                </div>
+            </div>
 
-                <section class="info-section">
-                    <h2>Contact Information</h2>
-                    <div class="dojo-contact">
-                        <a class="dojo-website" href="{{dojo_details[2]}}"></a>
+            <div class="info-section">
+                <h2 class="section-title">Contact Information</h2>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>{{dojo_details[1]}}</span>
                     </div>
-                    <div class="dojo-contact">
+                    <div class="contact-item">
                         <i class="fas fa-envelope"></i>
-                        <p>{{dojo_details[3]}}</p>
+                        <span>{{dojo_details[3]}}</span>
                     </div>
-                    <div class="dojo-contact">
+                    <div class="contact-item">
                         <i class="fas fa-phone"></i>
-                        <p>{{dojo_details[7]}}</p>
+                        <span>{{dojo_details[7]}}</span>
                     </div>
-                    <div class="dojo-contact">
-                        <p>Head Instructor: Bruno Gomes</p>
+                    <div class="contact-item">
+                        <i class="fas fa-user"></i>
+                        <span>Head Instructor: Bruno Gomes</span>
                     </div>
-                </section>
+                    <a href="{{dojo_details[2]}}" class="website-btn">
+                        <i class="fas fa-globe"></i>
+                        Visit Website
+                    </a>
+                </div>
             </div>
         </div>
+    </div>
 </body>
 </html>

@@ -5,275 +5,264 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <style>
-        /* Base variables */
-:root {
-    --primary-red: #ff3333;
-    --dark-red: #cc0000;
-    --dark-bg: #272727;
-    --darker-bg: #1a1a1a;
-    --text-light: #fff;
-    --text-muted: #888;
-    --border-color: #666;
-    --input-bg: #fff;
-    --input-text: #272727;
-    --schedule-bg: #333;
-    --border-radius-sm: 5px;
-    --border-radius-lg: 15px;
-    --spacing-xs: 5px;
-    --spacing-sm: 10px;
-    --spacing-md: 15px;
-    --spacing-lg: 20px;
-    --spacing-xl: 40px;
-}
-
-/* Form Overlay */
+/* Previous styles remain the same */
 .form-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: none;
-    justify-content: center;
-    align-items: flex-start;
-    z-index: 9999;
-    animation: fadeIn 0.3s ease-in-out;
-    overflow-y: auto;
-    padding: var(--spacing-sm);
-}
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease-in-out;
+            overflow: auto;
+            padding: 20px;
+        }
 
-.form-container {
-    background-color: var(--dark-bg);
-    padding: clamp(var(--spacing-lg), 5vw, var(--spacing-xl));
-    border-radius: var(--border-radius-lg);
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    width: min(90%, 450px);
-    font-family: 'Arial', sans-serif;
-    animation: scaleUp 0.3s ease-in-out;
-    position: relative;
-    color: var(--text-light);
-    margin: var(--spacing-xl) auto;
-    max-height: 90vh;
-    overflow-y: auto;
-}
+        .form-container {
+            background-color: #272727;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            font-family: 'Arial', sans-serif;
+            animation: scaleUp 0.3s ease-in-out;
+            position: relative;
+            color: #fff;
+            margin: 40px auto;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
 
-/* Scrollbar Styling */
-.form-container::-webkit-scrollbar {
-    width: 8px;
-}
+        /* Scrollbar styling */
+        .form-container::-webkit-scrollbar {
+            width: 8px;
+        }
 
-.form-container::-webkit-scrollbar-track {
-    background: var(--darker-bg);
-    border-radius: var(--border-radius-sm);
-}
+        .form-container::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-radius: 4px;
+        }
 
-.form-container::-webkit-scrollbar-thumb {
-    background: var(--primary-red);
-    border-radius: var(--border-radius-sm);
-}
+        .form-container::-webkit-scrollbar-thumb {
+            background: #ff3333;
+            border-radius: 4px;
+        }
 
-.form-container::-webkit-scrollbar-thumb:hover {
-    background: var(--dark-red);
-}
+        .form-container::-webkit-scrollbar-thumb:hover {
+            background: #cc0000;
+        }
 
-/* Form Inputs */
-.form-container input[type="text"],
-.form-container input[type="email"],
-.form-container input[type="number"],
-.form-container input[type="time"],
-.form-container select {
-    width: 100%;
-    padding: clamp(8px, 2vw, var(--spacing-lg));
-    margin-bottom: var(--spacing-md);
-    border-radius: var(--border-radius-sm);
-    border: none;
-    font-size: clamp(14px, 2vw, 16px);
-    background-color: var(--input-bg);
-    color: var(--input-text);
-}
+        .form-container input[type="text"],
+        .form-container input[type="email"],
+        .form-container input[type="number"],
+        .form-container input[type="time"],
+        .form-container select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            background-color: #fff;
+            color: #272727;
+        }
 
-/* Image Upload Styling */
-.image-upload-group {
-    margin-bottom: var(--spacing-lg);
-    text-align: left;
-}
+        .image-upload-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
 
-.image-upload-group label {
-    display: block;
-    margin-bottom: var(--spacing-xs);
-    font-size: clamp(14px, 2vw, 16px);
-}
+        .image-upload-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
 
-.optional-text {
-    color: var(--text-muted);
-    font-size: 0.9em;
-    margin-left: var(--spacing-xs);
-}
+        .optional-text {
+            color: #888;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
 
-.image-upload-container {
-    border: 2px dashed var(--border-color);
-    border-radius: var(--border-radius-sm);
-    padding: var(--spacing-lg);
-    text-align: center;
-    cursor: pointer;
-    margin-bottom: var(--spacing-sm);
-    transition: border-color 0.3s ease;
-}
+        .image-upload-container {
+            border: 2px dashed #666;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: border-color 0.3s ease;
+        }
 
-.image-upload-container:hover {
-    border-color: var(--primary-red);
-}
+        .image-upload-container:hover {
+            border-color: #ff3333;
+        }
 
-.image-upload-container i {
-    font-size: clamp(20px, 3vw, 24px);
-    margin-bottom: var(--spacing-sm);
-    color: var(--border-color);
-}
+        .image-upload-container i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #666;
+        }
 
-.image-preview {
-    max-width: 100%;
-    max-height: 150px;
-    display: none;
-    margin-top: var(--spacing-sm);
-}
+        .image-preview {
+            max-width: 100%;
+            max-height: 150px;
+            display: none;
+            margin-top: 10px;
+        }
 
-/* Price Input Styling */
-.price-title {
-    text-align: left;
-    margin-bottom: 2px;
-    color: antiquewhite;
-    font-size: small;
-    margin-top: -3px;
-}
+        .form-container input[type="file"] {
+            display: none;
+        }
 
-.price-input-container {
-    position: relative;
-    margin-bottom: var(--spacing-md);
-}
+        .price-title{
+            text-align:left;
+            margin-bottom:2px;
+            color:antiquewhite;
+            font-size: small;
+            margin-top: -3px;
+        }
 
-.price-symbol {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-    font-weight: bold;
-    font-size: clamp(14px, 2vw, 16px);
-}
+        .price-input-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
 
-/* Schedule Box Styling */
-.schedule-box {
-    border: 2px dashed var(--border-color);
-    border-radius: var(--border-radius-sm);
-    padding: var(--spacing-lg);
-    text-align: center;
-    margin-bottom: var(--spacing-md);
-}
+        .price-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px !important;
+            border: none !important;
+            font-size: 16px !important;
+            background-color: #fff !important;
+            color: #272727 !important;
+        }
 
-.schedule-section {
-    margin-top: -10px;
-}
+        .price-input::-webkit-outer-spin-button,
+        .price-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
 
-.schedule-h3 {
-    color: antiquewhite;
-    font-size: clamp(16px, 3vw, 20px);
-    margin: -10px 0;
-}
 
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: transparent;
-    border: none;
-    font-size: 24px;
-    color: var(--text-light);
-    cursor: pointer;
-    z-index: 1000;
-    padding: 0;
-    line-height: 1;
-    width: 24px;
-    height: 24px;
-}
+        .price-input:focus {
+            outline: none;
+        }
 
-.close-btn:hover {
-    color: #ff3333;
-}
+        .price-input::placeholder {
+            color: #999;
+        }
 
-.delete-schedule {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: #ff3333;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-}
+        .add-dojo-btn {
+            background-color: #ff3333;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
 
-.delete-schedule:hover {
-    background-color: #cc0000;
-}
+        .add-dojo-btn:hover {
+            background-color: #cc0000;
+        }
 
-.add-schedule-btn {
-    background-color: #ff3333;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    margin-top: 30px;
-    cursor: pointer;
-    border: none;
-    font-size: 16px;
-}
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
+        }
 
-.add-schedule-btn:hover {
-    background-color: #cc0000;
-}
+        .close-btn:hover {
+            color: #ff3333;
+        }
 
-.add-dojo-btn {
-    background-color: #ff3333;
-    color: white;
-    padding: 14px 24px;
-    border-radius: 8px;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 100%;
-    margin-top: 20px;
-}
+        .schedule-box {
+            border: 2px dashed #666;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
 
-.add-dojo-btn:hover {
-    background-color: #cc0000;
-}
+        .schedule-section {
+            margin-top: -10px;
+        }
 
-/* Mobile Adjustments */
-@media (max-width: 480px) {
-    .close-btn {
-        top: 5px;
-        right: 5px;
-        font-size: 22px;
-    }
-    .schedule-entry {
-        padding: 15px;
-        padding-top: 25px; /* Extra padding on top to accommodate the delete button */
-    }
-    
-    .delete-schedule {
-        top: 3px;
-        right: 3px;
-    }
-}
+        .schedule-h3 {
+            color: antiquewhite;
+            font-size: 20px;
+            margin-bottom: -10px;
+            margin-top:-10px;
+            text-align: center;
+        }
+        
+        .add-schedule-btn{
+            background-color: #ff3333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 30px; 
+            cursor: pointer; 
+        }
+
+        .schedule-entry {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .delete-schedule {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #ff3333;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .delete-schedule:hover {
+            background-color: #cc0000;
+        }
+
+        .schedule-entry label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleUp {
+            from { transform: scale(0.95); }
+            to { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -300,7 +289,6 @@
                         required
                         onchange="formatPrice(this)"
                         oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                    <span class="price-symbol">€/Month</span>
                 </div>
 
                 <div class="schedule-box">
