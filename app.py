@@ -100,16 +100,12 @@ def uploaded_file(filename):
 @app.route('/get_dojos', methods=['POST'])
 def get_dojos():
     city = request.form['location']
-    
+
     dojos = get_dojos_by_city(city)
     
     # Render a partial template containing just the dojo list
     return render_template('dojo_list.html',dojos=dojos)   
 
-
-@app.route('/add_dojo')
-def add_dojo():
-    return render_template('./add_dojo_form.html')
 
 @app.route('/premium_dojo_form',methods=['GET'])
 def premiun_dojo_form():
@@ -231,46 +227,6 @@ def add_dojo_to_premium():
         send_dojo_data_email(dojo, schedule_entries)
 
         return redirect('/')
-    
-
-@app.route('/add_dojo_to_normal', methods=['POST'])
-def add_dojo_to_normal():
-    dojo_name = request.form.get('dojo_name')
-    address = request.form.get('address')
-    city = request.form.get('city')
-    age_range = request.form.get('age_range')
-
-    # Create a dictionary of parameters
-    params = {
-        'dojo_name': dojo_name,
-        'address': address,
-        'city': city,
-        'age_range': age_range
-    }
-
-    # Build the confirmation URL with properly encoded parameters
-    confirmation_url = f"http://localhost:5000/confirm_dojo?{urlencode(params)}"
-
-    msg = Message(
-        subject="New Dojo Listing for Verification",
-        recipients=["dojofinderinfo@gmail.com"]
-    )
-    
-    msg.body = f"""
-    Please verify the following dojo details:
-
-    Dojo Name: {dojo_name}
-    Address: {address}
-    City: {city}
-    Age Range: {age_range}
-
-    Click the link below to confirm and add this dojo to the database:
-    {confirmation_url}
-    """
-
-    mail.send(msg)
-
-    return redirect('/')
 
 @app.route('/')
 def home():
