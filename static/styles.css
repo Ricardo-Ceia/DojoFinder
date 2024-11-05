@@ -126,6 +126,22 @@ nav ul li a {
     box-shadow: var(--shadow-md);
 }
 
+/*Errr container*/
+.error-container {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #ffebee;
+    border: 1px solid #ffcdd2;
+    display: none;
+}
+
+.error-message {
+    color: #b71c1c;
+    font-size: 14px;
+    font-weight: 500;
+}
+
 /* Add Dojo Card */
 .add-dojo-card {
     background-color: #fff;

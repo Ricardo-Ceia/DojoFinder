@@ -149,9 +149,8 @@ def clear_all_data(confirm=False):
         conn.close()
 
 if __name__ == "__main__":
-    #check_data()
+    check_data()
     #clear_all_data(confirm=True)
     #delete_by_id(1)
-    #delete_by_id(2)
     #inspect_database('dojo_listings.db')
-    delete_db(confirm=True)    
+    #delete_db(confirm=True)    
