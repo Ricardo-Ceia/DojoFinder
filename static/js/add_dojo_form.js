@@ -78,5 +78,7 @@ function formatPrice(input) {
 }
 
 function closeForm() {
-    $('#formOverlay').css('display', 'none');
+    $('#formOverlay').fadeOut(300, function() {
+        $(this).remove();
+    });
 }
