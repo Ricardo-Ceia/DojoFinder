@@ -2,7 +2,6 @@ from flask import Flask, jsonify, request,render_template,redirect,url_for,send_
 from flask_mail import Mail,Message
 from urllib.parse import urlencode, quote
 import sqlite3
-import stripe 
 import os
 
 
@@ -139,6 +138,7 @@ def add_dojo_to_premium():
     #get the schedule data
     index=0
     schedule_entries = []
+
     while True:
         day_of_week = request.form.get(f'schedules[{index}][day_of_week]')
         start_time = request.form.get(f'schedules[{index}][start_time]')
