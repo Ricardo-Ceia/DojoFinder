@@ -3,17 +3,17 @@ function setupImagePreview(inputId, previewId, containerId) {
     const input = document.getElementById(inputId);
     const preview = document.getElementById(previewId);
 
-    container.addEventListener('click', () => input.click());
+    container.onclick = (e) => {
+        // Prevent triggering multiple times
+        if (e.target === input) return;
+        input.click();
+    }
 
-    input.addEventListener('change', function(e) {
-        if (this.files && this.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            }
-            reader.readAsDataURL(this.files[0]);
-        }
+    $("#" + inputId).on("change",function(event){
+        var x = URL.createObjectURL(event.target.files[0]);
+        console.log(x);
+        $("#" + previewId).attr("src", x)
+        $("#" + previewId).show();
     });
 }
 
@@ -81,4 +81,4 @@ function closeForm() {
     $('#formOverlay').fadeOut(300, function() {
         $(this).remove();
     });
-}
+} 

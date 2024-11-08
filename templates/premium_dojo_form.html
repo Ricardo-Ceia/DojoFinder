@@ -23,20 +23,14 @@
         }
 
         .form-container {
-            background-color: #272727;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            max-width: 450px;
-            width: 90%;
-            font-family: 'Arial', sans-serif;
-            animation: scaleUp 0.3s ease-in-out;
-            position: relative;
-            color: #fff;
-            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 800px;
             max-height: 90vh;
             overflow-y: auto;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
         }
 
         /* Scrollbar styling */
@@ -64,13 +58,14 @@
         .form-container input[type="time"],
         .form-container select {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            border: none;
-            font-size: 16px;
-            background-color: #fff;
-            color: #272727;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #1e293b;
+            background: #f8fafc;
+            transition: all 0.2s ease;
+            margin-bottom: 1rem;
         }
         /* Add smooth transitions */
         input {
@@ -196,25 +191,28 @@
 
         .close-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: transparent;
+            right: 1.5rem;
+            top: 1.5rem;
+            background: none;
             border: none;
-            font-size: 24px;
-            color: #fff;
+            font-size: 1.5rem;
+            color: #64748b;
             cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.2s ease;
         }
 
         .close-btn:hover {
-            color: #ff3333;
+            background: #f1f5f9;
+            color: #1e293b;
         }
 
         .schedule-box {
-            border: 2px dashed #666;
-            border-radius: 5px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 15px;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
         }
 
         .schedule-section {
@@ -222,48 +220,53 @@
         }
 
         .schedule-h3 {
-            color: antiquewhite;
-            font-size: 20px;
-            margin-bottom: -10px;
-            margin-top:-10px;
-            text-align: center;
+            color: #1e293b;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
         }
         
         .add-schedule-btn{
-            background-color: #ff3333;
+            background: #2563eb;
             color: white;
-            padding: 10px 20px;
+            padding: 0.75rem 1.5rem;
+            border: none;
             border-radius: 8px;
-            margin-top: 30px; 
-            cursor: pointer; 
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .add-schedule-btn:hover {
+            background: #1d4ed8;
         }
 
         .schedule-entry {
-            background-color: #333;
-            padding: 20px;
+            background: white;
+            padding: 1.5rem;
             border-radius: 8px;
-            margin-bottom: 15px;
-            margin-top: 10px;
+            margin: 1rem 0;
             position: relative;
+            border: 1px solid #e2e8f0;
         }
 
         .delete-schedule {
             position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: #ff3333;
-            color: white;
+            right: 1rem;
+            top: 1rem;
+            background: #fee2e2;
+            color: #dc2626;
             border: none;
-            border-radius: 50%;
             width: 24px;
             height: 24px;
+            border-radius: 50%;
             cursor: pointer;
-            font-size: 14px;
-            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
         }
 
         .delete-schedule:hover {
-            background-color: #cc0000;
+            background: #fecaca;
         }
 
         .schedule-entry label {
@@ -281,6 +284,323 @@
         @keyframes scaleUp {
             from { transform: scale(0.95); }
             to { transform: scale(1); }
+        }
+
+        /* Update existing form styles */
+        #add_dojo_form_premium {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        #add_dojo_form_premium input[type="text"],
+        #add_dojo_form_premium input[type="email"],
+        #add_dojo_form_premium input[type="number"],
+        #add_dojo_form_premium select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        #add_dojo_form_premium input:focus,
+        #add_dojo_form_premium select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            outline: none;
+        }
+
+        .price-input-container {
+            margin: 1rem 0;
+        }
+
+        .price-title {
+            font-size: 1rem;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .image-upload-group {
+            margin: 1.5rem 0;
+        }
+
+        .image-upload-container {
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .image-upload-container:hover {
+            border-color: #2563eb;
+            background: #f8fafc;
+        }
+
+        .image-upload-container i {
+            font-size: 2rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            margin-top: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .add-dojo-btn {
+            background: #2563eb;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+        }
+
+        .add-dojo-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .optional-text {
+            color: #64748b;
+            font-size: 0.875rem;
+            font-weight: normal;
+        }
+
+        label {
+            color: #1e293b;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* Form Container Styles */
+        .form-container {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Input Fields */
+        .form-container input[type="text"],
+        .form-container input[type="email"],
+        .form-container input[type="number"],
+        .form-container input[type="time"],
+        .form-container select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #1e293b;
+            background: #f8fafc;
+            transition: all 0.2s ease;
+            margin-bottom: 1rem;
+        }
+
+        /* Input Focus States */
+        .form-container input:focus,
+        .form-container select:focus {
+            outline: none;
+            border-color: #2563eb;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Labels */
+        .form-container label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+
+        /* Schedule Section */
+        .schedule-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        .schedule-h3 {
+            color: #1e293b;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .add-schedule-btn {
+            background: #2563eb;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .add-schedule-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        /* Schedule Entry */
+        .schedule-entry {
+            background: #ffffff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            border: 1px solid #e2e8f0;
+            position: relative;
+        }
+
+        .delete-schedule {
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s ease;
+        }
+
+        .delete-schedule:hover {
+            background: #fecaca;
+            transform: scale(1.05);
+        }
+
+        /* Image Upload Sections */
+        .image-upload-group {
+            margin: 1.5rem 0;
+        }
+
+        .image-upload-container {
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #f8fafc;
+        }
+
+        .image-upload-container:hover {
+            border-color: #2563eb;
+            background: #f1f5f9;
+        }
+
+        .image-upload-container p {
+            color: #64748b;
+            font-size: 14px;
+            margin: 8px 0;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Price Input */
+        .price-input-container {
+            margin: 1rem 0;
+        }
+
+        .price-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+
+        .price-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #f8fafc;
+            transition: all 0.2s ease;
+        }
+
+        /* Submit Button */
+        .add-dojo-btn {
+            background: #2563eb;
+            color: #ffffff;
+            padding: 14px 24px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1.5rem;
+        }
+
+        .add-dojo-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        /* Optional Text */
+        .optional-text {
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: normal;
+        }
+
+        /* Close Button */
+        .close-btn {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            background: #f1f5f9;
+            border: none;
+            font-size: 20px;
+            color: #64748b;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: #e2e8f0;
+            color: #1e293b;
         }
     </style>
 </head>

@@ -4,180 +4,131 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .dojo-container {
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            padding: 0 16px;
+            padding: 20px;
+            margin-left: 16px;
         }
 
         .dojo {
             display: grid;
-            grid-template-columns: minmax(200px, 300px) 1fr;
-            gap: 16px;
-            padding: 24px 0;
-            border-bottom: 1px solid #ebebeb;
-            position: relative;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            padding: 32px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-left: 0;
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+        }
+
+        .dojo:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
         .dojo-image {
-            width: 100%;
-            height: 200px;
-            border-radius: 12px;
+            width: 250px;
+            height: 250px;
+            border-radius: 8px;
             background-size: cover;
             background-position: center;
-            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            object-fit: cover;
         }
 
         .dojo-content {
             display: flex;
             flex-direction: column;
-            width: 100%;
+            gap: 12px;
+            padding-right: 24px;
         }
 
         .dojo-title {
-            text-decoration: none;
-            font-size: clamp(18px, 4vw, 25px);
+            font-size: 28px;
             font-weight: 700;
-            color: #222222;
-            padding-bottom: 15px;
-            font-family: Popins, sans-serif;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            text-decoration: none;
+            transition: text-decoration 0.2s ease;
         }
 
         .dojo-title:hover {
             text-decoration: underline;
         }
 
+        .price {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 24px;
+        }
+
+        .price span {
+            color: #64748b;
+            font-weight: normal;
+            font-size: 18px;
+        }
+
         .dojo-details {
-            margin-top: 10px;
-            color: #717171;
-            font-size: 0.9em;
-            margin-bottom: 8px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            padding-bottom: 50px; /* Space for absolute positioned price */
+            gap: 20px;
         }
 
         .dojo-address, .dojo-website, .dojo-email {
             display: flex;
             align-items: center;
-            gap: 5px;
-            padding-left: 3px;
-            word-break: break-word;
+            gap: 12px;
+            color: #374151;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        #location-icon, #globe-icon, #email-icon {
+            width: 18px;
+            color: #2563eb;
+            flex-shrink: 0;
         }
 
         .dojo-website-anchor, .dojo-email-anchor {
-            word-break: break-all;
-        }
-        
-        #location-icon {
-            font-size: 20px;
-            color: red;
-            width: 20px;
-            min-width: 20px;
-            display: flex;
-            justify-content: center;
+            color: #2563eb;
             text-decoration: none;
-        }        
-
-        #globe-icon, #email-icon {
-            font-size: 15px;
-            width: 20px;
-            min-width: 20px;
-            color: black;
-            display: flex;
-            justify-content: center;
+            transition: color 0.2s ease;
         }
 
-        .dojo-address-anchor {
-            text-decoration: none;
-        }
-
-        .dojo-email-anchor {
-            text-decoration: none;
-            color: blue;
-        }
-
-        .dojo-email-anchor:hover {
+        .dojo-website-anchor:hover, .dojo-email-anchor:hover {
+            color: #1d4ed8;
             text-decoration: underline;
-        }
-
-        .dojo-website-anchor {
-            text-decoration: none;
-            color: #717171;
-        }
-
-        .dojo-website-anchor:hover {
-            text-decoration: underline;
-            color: #222222;
-        }
-
-        .price {
-            position: absolute;
-            right: 0;
-            bottom: 24px;
-            font-size: clamp(20px, 4vw, 30px);
-            font-weight: 500;
-        }
-
-        .price span {
-            font-weight: 400;
-            color: #717171;
-            font-size: 0.9em;
         }
 
         .no-results {
+            padding: 40px;
             text-align: center;
-            padding: 48px 16px;
-            color: #717171;
-            font-size: clamp(16px, 3vw, 1.2em);
-            font-family: Popins, sans-serif;
+            color: #64748b;
+            font-size: 18px;
         }
 
-        /* Media Queries */
         @media screen and (max-width: 768px) {
+            .dojo-container {
+                margin-left: 8px;
+            }
+
             .dojo {
                 grid-template-columns: 1fr;
+                padding: 20px 12px;
             }
 
             .dojo-image {
-                height: 250px;
-            }
-
-            .price {
-                position: relative;
-                bottom: auto;
-                right: auto;
-                margin-top: 16px;
-            }
-
-            .dojo-details {
-                padding-bottom: 0;
-            }
-        }
-
-        @media screen and (max-width: 480px) {
-            .dojo-container {
-                padding: 0 12px;
-            }
-
-            .dojo {
-                padding: 16px 0;
-            }
-
-            .dojo-image {
+                width: 100%;
                 height: 200px;
+            }
+
+            .dojo-content {
+                padding-right: 0;
             }
         }
     </style>
@@ -189,25 +140,23 @@
             <div class="dojo">
                 <div class="dojo-image" style="background-image: url('{{ dojo[4] }}');"></div>
                 <div class="dojo-content">
-                        <a class="dojo-title" href="/dojo_details?dojo_id={{ dojo[7] }}">{{dojo[0]}}</a>
-                        <div class="dojo-details">
-                            <div class="dojo-address">
-                                <a class="dojo-address-anchor" href="https://www.google.com/maps?q={{ dojo[1] }}" target="_blank">
-                                    <i class="fa-solid fa-location-dot" id="location-icon"></i>
-                                </a>
-                                {{dojo[1]}}
-                            </div>
-                            <div class="dojo-website">
-                                <i class="fa-solid fa-globe" id="globe-icon"></i>
-                                <a class="dojo-website-anchor" href="{{ dojo[2] }}" target="_blank">{{ dojo[2] }}</a>
-                            </div>
-                            <div class="dojo-email">
-                                <i class="fa-solid fa-envelope" id="email-icon"></i>
-                                <a class="dojo-email-anchor" href="mailto:{{ dojo[3] }}">{{ dojo[3] }}</a>
-                            </div>
-                        </div>
+                    <a class="dojo-title" href="/dojo_details?dojo_id={{ dojo[7] }}">{{dojo[0]}}</a>
                     <div class="price">
-                       {{dojo[5]}} <span>€/Month</span>
+                        {{dojo[5]}} <span>€/Month</span>
+                    </div>
+                    <div class="dojo-details">
+                        <div class="dojo-address">
+                            <i class="fa-solid fa-location-dot" id="location-icon"></i>
+                            {{dojo[1]}}
+                        </div>
+                        <div class="dojo-website">
+                            <i class="fa-solid fa-globe" id="globe-icon"></i>
+                            <a class="dojo-website-anchor" href="{{ dojo[2] }}" target="_blank">{{ dojo[2] }}</a>
+                        </div>
+                        <div class="dojo-email">
+                            <i class="fa-solid fa-envelope" id="email-icon"></i>
+                            <a class="dojo-email-anchor" href="mailto:{{ dojo[3] }}">{{ dojo[3] }}</a>
+                        </div>
                     </div>
                 </div>
             </div>
