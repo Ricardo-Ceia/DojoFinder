@@ -61,7 +61,7 @@ def get_dojo_by_id(dojo_id):
     conn = sqlite3.connect('./DB/dojo_listings.db')
     cursor = conn.cursor()
 
-    cursor.execute('''SELECT name, address, website, email, sensei_path, athletes_path,image_path, phone,price_per_month FROM dojos WHERE id = ?''', (dojo_id,))
+    cursor.execute('''SELECT name, address, website, email, sensei_path, athletes_path,image_path, phone,price_per_month,head_instructor FROM dojos WHERE id = ?''', (dojo_id,))
     dojo = cursor.fetchone()
 
     conn.close()
@@ -131,6 +131,7 @@ def add_dojo_to_premium():
     email = request.form.get('email')
     phone = request.form.get('phone')
     price = request.form.get('class_price') 
+    head_instructor = request.form.get('head_instructor')
     # Get the image files
     dojo_image = request.files.get('dojo_image')
     sensei_image = request.files.get('sensei_image')
@@ -185,12 +186,12 @@ def add_dojo_to_premium():
 
         cursor.execute('''
             INSERT INTO dojos (
-                name,address,city,website,phone,email,sensei_path,athletes_path,image_path,price_per_month
+                name,address,city,website,phone,email,sensei_path,athletes_path,image_path,price_per_month,head_instructor
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             name, address, city,website,
-            phone, email, sensei_image_path, athletes_image_path,dojo_image_path,price
+            phone, email, sensei_image_path, athletes_image_path,dojo_image_path,price,head_instructor
         ))
         conn.commit()
 
@@ -221,7 +222,8 @@ def add_dojo_to_premium():
             'website': website,
             'email': email,
             'phone': phone,
-            'price': price
+            'price': price,
+            'head_instructor': head_instructor
         }
 
         send_dojo_data_email(dojo, schedule_entries)

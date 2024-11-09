@@ -22,7 +22,8 @@ def create_database():
         sensei_path TEXT,
         athletes_path TEXT,
         image_path TEXT,
-        price_per_month TEXT,  
+        price_per_month TEXT,
+        head_instructor TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
     ''')

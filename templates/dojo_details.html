@@ -79,6 +79,8 @@
             background: var(--card-bg);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
+            height: 500px;
+            position: relative;
             overflow: hidden;
         }
 
@@ -94,18 +96,34 @@
         }
 
         /* Schedule Grid */
+        .schedule-grid-container {
+            position: absolute;
+            top: 60px;  /* Height of the header */
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
         .schedule-grid {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
+            grid-template-columns: repeat(7, 300px);
             gap: 1px;
             background: var(--border);
+            min-width: min-content;
+            height: min-content;
         }
 
         .day-column {
             background: var(--card-bg);
+            min-width: 300px;
         }
 
         .day-header {
+            position: sticky;
+            top: 0;
+            z-index: 1;
             padding: 1rem;
             text-align: center;
             background: var(--primary-color);
@@ -114,35 +132,81 @@
         }
 
         .day-content {
-            padding: 1rem;
-            min-height: 100px;
+            padding: 1.2rem;
+            min-height: 200px;
         }
 
         .class-item {
             margin-bottom: 1rem;
-            padding-bottom: 1rem;
+            padding: 0.75rem;
             border-bottom: 1px solid var(--border);
+            position: relative;
         }
 
-        .class-item:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
+        .class-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .class-time, .class-instructor, .class-age {
+            display: flex;
+            gap: 0.5rem;
+            line-height: 1.4;
         }
 
         .class-time {
-            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
             color: var(--text-color);
         }
 
-        .class-instructor {
-            color: var(--primary-color);
-            font-size: 0.9rem;
+        .instructor-container, .age-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .class-age {
+        .age-container {
+            margin-bottom: 0.4rem;
+        }
+
+        .label {
+            font-size: 0.85rem;
+            color: var(--text-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .value {
+            font-size: 0.95rem;
             color: var(--secondary-text);
-            font-size: 0.8rem;
+            font-weight: 400;
+        }
+
+        .instructor-value {
+            color: var(--secondary-text);
+        }
+
+        .competition-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .competition-badge {
+            display: inline-flex;
+            align-items: center;
+            background: var(--primary-color);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.8rem;
+            border-radius: 12px;
+            width: fit-content;
         }
 
         .closed {
@@ -197,7 +261,6 @@
             padding: 1rem;
             text-align: center;
             border-radius: var(--radius);
-            margin: 1.5rem;
             transition: all 0.3s ease;
         }
 
@@ -229,9 +292,42 @@
                 min-height: 80px;
             }
         }
+
+        /* Scrollbar styling */
+        .schedule-grid-container::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+            background-color: #F5F5F5;
+        }
+
+        .schedule-grid-container::-webkit-scrollbar-track {
+            background-color: #F5F5F5;
+            border-radius: 10px;
+        }
+
+        .schedule-grid-container::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            background-color: var(--primary-color);
+        }
+
+        /* For Firefox */
+        .schedule-grid-container {
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) #F5F5F5;
+        }
+
+        /* Update HTML structure to match time label styling */
+        .class-time .label {
+            color: var(--text-color);
+        }
+
+        .class-time .value {
+            color: var(--secondary-text);
+        }
     </style>
 </head>
 <body>
+    <script>console.log("{{dojo_details[9]}}")</script>
     <div class="container">
         <div class="hero">
             <img class="hero-image" src="{{dojo_details[6]}}" alt="{{dojo_details[0]}}">
@@ -245,32 +341,50 @@
                 <div class="card-header">
                     <h2 class="card-title">Weekly Schedule</h2>
                 </div>
-                <div class="schedule-grid">
-                    {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
-                    <div class="day-column">
-                        <div class="day-header">{{day}}</div>
-                        <div class="day-content">
-                            {% set day_schedule = [] %}
-                            {% for schedule in schedules %}
-                                {% if schedule[0] == day %}
-                                    {% set _ = day_schedule.append(schedule) %}
-                                {% endif %}
-                            {% endfor %}
-                            
-                            {% if day_schedule %}
-                                {% for schedule in day_schedule %}
-                                <div class="class-item">
-                                    <div class="class-time">{{schedule[1]}} - {{schedule[2]}}</div>
-                                    <div class="class-instructor">{{schedule[3]}}</div>
-                                    <div class="class-age">Ages {{schedule[5]}}</div>
-                                </div>
+                <div class="schedule-grid-container">
+                    <div class="schedule-grid">
+                        {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+                        <div class="day-column">
+                            <div class="day-header">{{day}}</div>
+                            <div class="day-content">
+                                {% set day_schedule = [] %}
+                                {% for schedule in schedules %}
+                                    {% if schedule[0] == day %}
+                                        {% set _ = day_schedule.append(schedule) %}
+                                    {% endif %}
                                 {% endfor %}
-                            {% else %}
-                                <div class="closed">Closed</div>
-                            {% endif %}
+                                
+                                {% if day_schedule %}
+                                    {% for schedule in day_schedule %}
+                                    <div class="class-item">
+                                        <div class="class-info">
+                                            <div class="class-time">
+                                                <span class="label">Time:</span>
+                                                <span class="value">{{schedule[1]}} - {{schedule[2]}}</span>
+                                            </div>
+                                            <div class="instructor-container">
+                                                <span class="label">Instructor:</span>
+                                                <span class="value">{{schedule[3]}}</span>
+                                            </div>
+                                            <div class="age-container">
+                                                <span class="label">Age:</span>
+                                                <span class="value">{{schedule[5]}}</span>
+                                            </div>
+                                            {% if schedule[4] %}
+                                                <div class="competition-wrapper">
+                                                    <span class="competition-badge">Competition</span>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="closed">Closed</div>
+                                {% endif %}
+                            </div>
                         </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
                 </div>
             </div>
 
@@ -308,11 +422,15 @@
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">
-                            <i class="fas fa-user"></i>
+                            {% if dojo_details[4] %}
+                                <img src="{{ dojo_details[4] }}" alt="Head Instructor" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                            {% else %}
+                                <i class="fas fa-user"></i>
+                            {% endif %}
                         </div>
                         <div class="contact-text">
                             <div class="contact-label">Head Instructor</div>
-                            Keiji Suzuki
+                            {{dojo_details[9]}}
                         </div>
                     </div>
                     <a href="{{dojo_details[2]}}" class="website-btn">
