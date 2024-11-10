@@ -2,10 +2,18 @@ from flask import Flask, jsonify, request,render_template,redirect,url_for,send_
 from flask_mail import Mail,Message
 from urllib.parse import urlencode, quote
 import sqlite3
+import hashlib
 import os
 
 
 app = Flask(__name__)
+
+ADMIN_PASSWORD = 'benficacampeao'
+
+ADMIN_USERNAME = 'salzAdmin'
+
+ADMIN_PASSWORD_HASH = hashlib.sha256(ADMIN_PASSWORD.encode()).hexdigest()
+
 
 UPLOAD_FOLDER = 'uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -114,11 +122,9 @@ def premiun_dojo_form():
 @app.route('/dojo_details',methods=['GET'])
 def dojo_details():
     dojo_id = request.args.get('dojo_id')
-    print(f"dojo_id:{dojo_id}")
+
     schedules = get_schedules_by_dojo_id(dojo_id)
     dojo_details = get_dojo_by_id(dojo_id)
-    print(f"schedules:{schedules}")
-    print(f"dojo_details:{dojo_details}")
 
     return render_template('dojo_details.html',dojo_details=dojo_details,schedules=schedules)
 
@@ -234,7 +240,24 @@ def add_dojo_to_premium():
 def home():
     return render_template('./homePage.html')
 
+@app.route('/admin_login',methods=['GET','POST'])
+def admin_login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
 
+        if(username==ADMIN_USERNAME and password==ADMIN_PASSWORD):
+            session['admin_logged_in'] = True
+            return redirect('/admin_dashboard')
+        else:
+            return render_template('admin_login.html',error="Invalid username or password") 
+    return render_template('admin_login.html')
+
+
+@app.route('/admin_dashboard',methods=['GET'])
+def admin_logout():
+    session.pop('admin_logged_in',None)
+    return redirect('/')
     
 if __name__ == '__main__':
     app.run(debug=True)

@@ -258,7 +258,7 @@
             background: var(--primary-color);
             color: white;
             text-decoration: none;
-            padding: 1rem;
+            padding: 0.5rem;
             text-align: center;
             border-radius: var(--radius);
             transition: all 0.3s ease;
@@ -323,6 +323,16 @@
 
         .class-time .value {
             color: var(--secondary-text);
+        }
+
+        .contact-link {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-link:hover {
+            color: var(--primary-color);
         }
     </style>
 </head>
@@ -399,7 +409,11 @@
                         </div>
                         <div class="contact-text">
                             <div class="contact-label">Location</div>
-                            {{dojo_details[1]}}
+                            <a href="https://www.google.com/maps/search/?api=1&query={{dojo_details[1]|urlencode}}" 
+                               target="_blank" 
+                               class="contact-link">
+                                {{dojo_details[1]}}
+                            </a>
                         </div>
                     </div>
                     <div class="contact-item">
@@ -408,7 +422,9 @@
                         </div>
                         <div class="contact-text">
                             <div class="contact-label">Email</div>
-                            {{dojo_details[3]}}
+                            <a href="mailto:{{dojo_details[3]}}" class="contact-link">
+                                {{dojo_details[3]}}
+                            </a>
                         </div>
                     </div>
                     <div class="contact-item">
