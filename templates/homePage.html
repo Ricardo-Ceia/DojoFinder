@@ -65,40 +65,55 @@
         }
 
         #search-form {
-            display: flex;
-            gap: 1rem;
-            max-width: 600px;
-            margin: 0 auto 2rem;
-            padding: 0.5rem;
-            background: var(--white);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-md);
-        }
+    display: flex;
+    gap: 1rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    padding: 0.5rem;
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    align-items: center;
+}
 
-        #search-form input {
-            flex: 1;
-            padding: 1rem 1.5rem;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 1.1rem;
-            outline: none;
-        }
+#search-form input[type="text"] {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1.1rem;
+    outline: none;
+}
 
-        #search-form button {
-            padding: 1rem 2rem;
-            background: var(--primary-color);
-            color: var(--white);
-            border: none;
-            border-radius: var(--radius);
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+.search-button,
+.near-me-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    background: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
-        #search-form button:hover {
-            background: var(--primary-hover);
-            transform: translateY(-2px);
-        }
+.search-button:hover,
+.near-me-button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.near-me-button {
+    background: var(--accent-color);
+}
+
+.near-me-button:hover {
+    background: #e12626;
+}
 
         .add-dojo-card {
             background: rgba(255, 255, 255, 0.95);
@@ -211,7 +226,14 @@
                 <h1 class="find_dojo_h1">Find Judo Dojos in Your City</h1>
                 <form id="search-form">
                     <input type="text" name="location" placeholder="Enter your city" required>
-                    <button type="submit">Search</button>
+                    <button type="submit" class="search-button">
+                        <i class="fas fa-search"></i>
+                        Search
+                    </button>
+                    <button type="button" class="near-me-button">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Near Me
+                    </button>
                 </form>
                 <div id="error-container" class="error-container" style="display: none;">
                     <div id="error-message" class="error-message"></div>

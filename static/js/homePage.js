@@ -79,6 +79,44 @@ $(document).ready(function() {
         });
     });
 
+    $('.near-me-button').on('click',function(e){
+        e.preventDefault();
+
+        navigator.geolocation.getCurrentPosition(
+            function(position){
+                var longitude = position.coords.longitude;
+                var latitude = position.coords.latitude;
+
+                geoData = {
+                    latitude: latitude,
+                    longitude: longitude
+                }
+
+                $.ajax({
+                    url: '/get_near_me',
+                    method: 'GET',
+                    data: { location: geoData },
+                    success:function(response){
+                        $('#response').html(response);
+
+                        $('html, body').animate({
+                            scrollTop: $('#response').offset().top
+                        }, 1000);
+                    },
+                    error: function(xhr, status, error) {
+                        // Log detailed error information
+                        console.log("Error details:", {
+                            response: xhr.responseText,
+                            status: status,
+                            error: error
+                        });
+                        $('#response').html('<p>Error fetching dojo data. Please try again later.</p>');
+                    }
+                })
+            }
+        )
+    })
+
     // Clear error on input
     $('input[name="location"]').on('input', function() {
         hideError();

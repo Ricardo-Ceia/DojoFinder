@@ -1,18 +1,12 @@
 from flask import Flask, jsonify, request,render_template,redirect,url_for,send_from_directory,session
 from flask_mail import Mail,Message
 from urllib.parse import urlencode, quote
+from functools import wraps
 import sqlite3
-import hashlib
 import os
 
 
 app = Flask(__name__)
-
-ADMIN_PASSWORD = 'benficacampeao'
-
-ADMIN_USERNAME = 'salzAdmin'
-
-ADMIN_PASSWORD_HASH = hashlib.sha256(ADMIN_PASSWORD.encode()).hexdigest()
 
 
 UPLOAD_FOLDER = 'uploads/'
@@ -27,6 +21,7 @@ app.config['MAIL_PASSWORD'] = 'apzg wucx yhsr kqto'  # Replace with your App Pas
 app.config['MAIL_DEFAULT_SENDER'] = 'dojofinderinfo@gmail.com'  # Default sender email
 
 mail = Mail(app)
+
 
 def send_dojo_data_email(dojo, schedules):
     # Format dojo information
@@ -112,7 +107,6 @@ def get_dojos():
     
     # Render a partial template containing just the dojo list
     return render_template('dojo_list.html',dojos=dojos)   
-
 
 @app.route('/premium_dojo_form',methods=['GET'])
 def premiun_dojo_form():
@@ -240,24 +234,5 @@ def add_dojo_to_premium():
 def home():
     return render_template('./homePage.html')
 
-@app.route('/admin_login',methods=['GET','POST'])
-def admin_login():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-
-        if(username==ADMIN_USERNAME and password==ADMIN_PASSWORD):
-            session['admin_logged_in'] = True
-            return redirect('/admin_dashboard')
-        else:
-            return render_template('admin_login.html',error="Invalid username or password") 
-    return render_template('admin_login.html')
-
-
-@app.route('/admin_dashboard',methods=['GET'])
-def admin_logout():
-    session.pop('admin_logged_in',None)
-    return redirect('/')
-    
 if __name__ == '__main__':
     app.run(debug=True)
