@@ -24,6 +24,8 @@ def create_database():
         image_path TEXT,
         price_per_month TEXT,
         head_instructor TEXT,
+        latitude REAL,
+        longitude REAL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
     ''')

@@ -1,13 +1,17 @@
 from flask import Flask, jsonify, request,render_template,redirect,url_for,send_from_directory,session
 from flask_mail import Mail,Message
 from urllib.parse import urlencode, quote
-from functools import wraps
+from geopy.geocoders import Nominatim
+from geopy.distance import geodesic
 import sqlite3
+import math 
+import numpy as np 
 import os
 
 
 app = Flask(__name__)
 
+locator = Nominatim(user_agent="meGeocoder")
 
 UPLOAD_FOLDER = 'uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -34,6 +38,8 @@ def send_dojo_data_email(dojo, schedules):
     Email: {dojo['email']}
     Phone: {dojo['phone']}
     Price per month: {dojo['price']}
+    latitude: {dojo['latitude']}
+    longitude: {dojo['longitude']}
     """
     
     # Format schedule information
@@ -132,6 +138,14 @@ def add_dojo_to_premium():
     phone = request.form.get('phone')
     price = request.form.get('class_price') 
     head_instructor = request.form.get('head_instructor')
+
+    #Get the location coords of the dojo
+    location = locator.geocode(address)
+    latitude = None
+    longitude = None
+    if location:
+        latitude = location.latitude
+        longitude = location.longitude
     # Get the image files
     dojo_image = request.files.get('dojo_image')
     sensei_image = request.files.get('sensei_image')
@@ -186,12 +200,12 @@ def add_dojo_to_premium():
 
         cursor.execute('''
             INSERT INTO dojos (
-                name,address,city,website,phone,email,sensei_path,athletes_path,image_path,price_per_month,head_instructor
+                name,address,city,website,phone,email,sensei_path,athletes_path,image_path,price_per_month,head_instructor,latitude,longitude
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)
         ''', (
             name, address, city,website,
-            phone, email, sensei_image_path, athletes_image_path,dojo_image_path,price,head_instructor
+            phone, email, sensei_image_path, athletes_image_path,dojo_image_path,price,head_instructor,latitude,longitude
         ))
         conn.commit()
 
@@ -223,12 +237,59 @@ def add_dojo_to_premium():
             'email': email,
             'phone': phone,
             'price': price,
-            'head_instructor': head_instructor
+            'head_instructor': head_instructor,
+            'latitude': latitude,
+            'longitude': longitude
         }
 
         send_dojo_data_email(dojo, schedule_entries)
 
         return redirect('/')
+    
+@app.route('/get_near_me',methods=['POST'])
+def get_near_me():
+    #location of the user
+    user_latitude = float(request.form.get('latitude'))
+    user_longitude = float(request.form.get('longitude'))
+
+    conn = sqlite3.connect('./DB/dojo_listings.db')
+    cursor = conn.cursor()
+    
+    # Optimize query by adding spatial bounds
+    # This creates a bounding box around the user's location
+    # 1 degree of latitude ≈ 69 miles, so 0.15 degrees ≈ 10 miles
+    lat_range = 0.15
+    lon_range = 0.15 / np.cos(np.radians(user_latitude))  # Adjust for longitude distance variation
+
+    cursor.execute('''
+        SELECT id, latitude, longitude 
+        FROM dojos 
+        WHERE latitude BETWEEN ? AND ?
+        AND longitude BETWEEN ? AND ?
+    ''', (
+        user_latitude - lat_range, user_latitude + lat_range,
+        user_longitude - lon_range, user_longitude + lon_range
+    ))
+    
+    potential_dojos = cursor.fetchall()
+
+    dojos_near_user = []
+
+    for dojo in potential_dojos:
+        dojo_coords = (dojo[1],dojo[2])
+        user_coords = (user_latitude,user_longitude)
+        dojo_distance = geodesic(user_coords,dojo_coords).miles
+        if dojo_distance < 10:
+            cursor.execute("""SELECT name, address, website, email, image_path, price_per_month,phone,id 
+                           FROM dojos WHERE id LIKE ?""",
+                            ('%' + str(dojo[0]) + '%',))
+            dojo = cursor.fetchone()
+            print(f"Dojo near me:{dojo}")
+            dojos_near_user.append(dojo)
+
+    conn.close()
+
+    return render_template('dojo_list.html',dojos=dojos_near_user)
 
 @app.route('/')
 def home():

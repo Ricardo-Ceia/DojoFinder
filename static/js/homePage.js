@@ -56,6 +56,7 @@ $(document).ready(function() {
             method: 'POST',
             data: { location: city },
             success: function(response) {
+                console.log(response);
                 // Log the response to see its content
                 console.log('AJAX Response:', response);
                 
@@ -80,23 +81,21 @@ $(document).ready(function() {
     });
 
     $('.near-me-button').on('click',function(e){
-        e.preventDefault();
-
         navigator.geolocation.getCurrentPosition(
             function(position){
+                e.preventDefault();
                 var longitude = position.coords.longitude;
                 var latitude = position.coords.latitude;
 
-                geoData = {
-                    latitude: latitude,
-                    longitude: longitude
-                }
-
                 $.ajax({
                     url: '/get_near_me',
-                    method: 'GET',
-                    data: { location: geoData },
+                    method: 'POST',
+                    data:{
+                        latitude: latitude,
+                        longitude: longitude
+                    },
                     success:function(response){
+                        console.log(response)
                         $('#response').html(response);
 
                         $('html, body').animate({
