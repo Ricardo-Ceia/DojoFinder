@@ -75,7 +75,15 @@ $(document).ready(function() {
                     status: status,
                     error: error
                 });
-                $('#response').html('<p>Error fetching dojo data. Please try again later.</p>');
+                if (xhr.status === 404) {
+                    const responseJson = JSON.parse(xhr.responseText);
+                    console.log("responseJSON:",responseJson);
+                    console.log("xhr.responseText:",xhr.responseText);
+                    $('#response').html(`<p>${responseJson['error']}</p>`);
+                }
+                else{
+                    $('#response').html('<p>Error fetching dojo data. Please try again later.</p>');
+                }
             }
         });
     });

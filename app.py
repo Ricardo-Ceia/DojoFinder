@@ -70,7 +70,7 @@ def get_dojo_by_id(dojo_id):
     conn = sqlite3.connect('./DB/dojo_listings.db')
     cursor = conn.cursor()
 
-    cursor.execute('''SELECT name, address, website, email, sensei_path, athletes_path,image_path, phone,price_per_month,head_instructor FROM dojos WHERE id = ?''', (dojo_id,))
+    cursor.execute('''SELECT name, address, website, email, sensei_path,image_path, phone,price_per_month,head_instructor FROM dojos WHERE id = ?''', (dojo_id,))
     dojo = cursor.fetchone()
 
     conn.close()
@@ -110,13 +110,16 @@ def get_dojos():
     city = request.form['location']
 
     dojos = get_dojos_by_city(city)
+
+    if not dojos:
+        return jsonify({'error': f'No dojos found in {city.strip()}'}),404
     
     # Render a partial template containing just the dojo list
-    return render_template('dojo_list.html',dojos=dojos)   
+    return render_template('dojo_list.html',dojos=dojos),200
 
 @app.route('/premium_dojo_form',methods=['GET'])
 def premiun_dojo_form():
-    return render_template('premium_dojo_form.html')
+    return render_template('premium_dojo_form.html'),200
 
 
 @app.route('/dojo_details',methods=['GET'])
@@ -149,7 +152,6 @@ def add_dojo_to_premium():
     # Get the image files
     dojo_image = request.files.get('dojo_image')
     sensei_image = request.files.get('sensei_image')
-    athletes_image = request.files.get('athletes_image')
     #get the schedule data
     index=0
     schedule_entries = []
@@ -188,24 +190,18 @@ def add_dojo_to_premium():
             sensei_image_path = os.path.join(app.config['UPLOAD_FOLDER'], sensei_image.filename)
             sensei_image.save(sensei_image_path)
 
-        # Save athletes image if provided
-        athletes_image_path = None
-        if athletes_image:
-            athletes_image_path = os.path.join(app.config['UPLOAD_FOLDER'], athletes_image.filename)
-            athletes_image.save(athletes_image_path)
-
         # Database connection
         conn = sqlite3.connect('./DB/dojo_listings.db')
         cursor = conn.cursor()
 
         cursor.execute('''
             INSERT INTO dojos (
-                name,address,city,website,phone,email,sensei_path,athletes_path,image_path,price_per_month,head_instructor,latitude,longitude
+                name,address,city,website,phone,email,sensei_path,image_path,price_per_month,head_instructor,latitude,longitude
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
         ''', (
             name, address, city,website,
-            phone, email, sensei_image_path, athletes_image_path,dojo_image_path,price,head_instructor,latitude,longitude
+            phone, email, sensei_image_path,dojo_image_path,price,head_instructor,latitude,longitude
         ))
         conn.commit()
 
@@ -284,7 +280,7 @@ def get_near_me():
                            FROM dojos WHERE id LIKE ?""",
                             ('%' + str(dojo[0]) + '%',))
             dojo = cursor.fetchone()
-            print(f"Dojo near me:{dojo}")
+        
             dojos_near_user.append(dojo)
 
     conn.close()

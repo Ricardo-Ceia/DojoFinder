@@ -20,7 +20,6 @@ def create_database():
         phone TEXT,
         email TEXT,
         sensei_path TEXT,
-        athletes_path TEXT,
         image_path TEXT,
         price_per_month TEXT,
         head_instructor TEXT,
