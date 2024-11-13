@@ -8,7 +8,7 @@ def client():
         yield client
 
 def test_get_dojos_performance(client, benchmark):
-    benchmark(client.post, '/get_dojos', data={'location': 'New York'})
+    benchmark(client.post, '/get_dojos', data={'location': 'Lisboa'})
 
 def test_dojo_details_performance(client, benchmark):
     benchmark(client.get, '/dojo_details?dojo_id=1')

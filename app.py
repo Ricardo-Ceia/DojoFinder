@@ -65,29 +65,28 @@ def send_dojo_data_email(dojo, schedules):
     mail.send(msg)
      
 
-#function to query the database to get the dojo details by their id
-def get_dojo_by_id(dojo_id):
+def get_dojo_details_with_schedules(dojo_id):
     conn = sqlite3.connect('./DB/dojo_listings.db')
     cursor = conn.cursor()
 
-    cursor.execute('''SELECT name, address, website, email, sensei_path,image_path, phone,price_per_month,head_instructor FROM dojos WHERE id = ?''', (dojo_id,))
-    dojo = cursor.fetchone()
-
+    cursor.execute('''
+        SELECT d.name, d.address, d.website, d.email, d.sensei_path, d.image_path, d.phone, d.head_instructor,
+               s.day_of_week, s.start_time, s.end_time, s.instructor, s.competition_only, s.age_range
+        FROM dojos d
+        LEFT JOIN schedules s ON d.id = s.dojo_id
+        WHERE d.id = ?
+    ''', (dojo_id,))
+    
+    results = cursor.fetchall()
     conn.close()
 
-    return dojo
-
-#function to query the databse to get the schedules by dojo_id
-def get_schedules_by_dojo_id(dojo_id):
-    conn = sqlite3.connect('./DB/dojo_listings.db')
-    cursor = conn.cursor()
-
-    cursor.execute('''SELECT day_of_week, start_time, end_time, instructor, competition_only, age_range FROM schedules WHERE dojo_id = ?''', (dojo_id,))
-    schedules = cursor.fetchall()
-
-    conn.close()
-
-    return schedules
+    # Process `results` into a dojo details object and a list of schedules
+    if results:
+        dojo_details = results[0][:8]  # First 9 fields are dojo details
+        schedules = [result[8:] for result in results if result[8] is not None]  # Remaining fields are schedules
+        return dojo_details, schedules
+    else:
+        return None, []
 
 # Function to query the database
 def get_dojos_by_city(city):
@@ -126,8 +125,9 @@ def premiun_dojo_form():
 def dojo_details():
     dojo_id = request.args.get('dojo_id')
 
-    schedules = get_schedules_by_dojo_id(dojo_id)
-    dojo_details = get_dojo_by_id(dojo_id)
+    dojo_details,schedules = get_dojo_details_with_schedules(dojo_id)
+
+    print("Test:",dojo_details)
 
     return render_template('dojo_details.html',dojo_details=dojo_details,schedules=schedules)
 
