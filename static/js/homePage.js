@@ -106,9 +106,10 @@ $(document).ready(function() {
                         console.log(response)
                         $('#response').html(response);
 
-                        $('html, body').animate({
-                            scrollTop: $('#response').offset().top
-                        }, 1000);
+                        document.getElementById('response').scrollIntoView({
+                            behavior:'auto',
+                            block:'start'
+                        });
                     },
                     error: function(xhr, status, error) {
                         // Log detailed error information

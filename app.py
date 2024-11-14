@@ -302,7 +302,7 @@ def get_near_me():
     conn.close()
 
     return render_template('dojo_list.html',dojos=dojos_near_user)
-
+         
 @app.route('/')
 def home():
     return render_template('./homePage.html')
