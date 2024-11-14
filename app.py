@@ -4,7 +4,8 @@ from urllib.parse import urlencode, quote
 from geopy.geocoders import Nominatim
 from geopy.distance import geodesic
 import sqlite3
-import math 
+from cachetools import cached, TTLCache
+from threading import Thread
 import numpy as np 
 import os
 
@@ -26,8 +27,15 @@ app.config['MAIL_DEFAULT_SENDER'] = 'dojofinderinfo@gmail.com'  # Default sender
 
 mail = Mail(app)
 
+def send_async_email(app, msg):
+    with app.app_context():
+        try:
+            mail.send(msg)
+        except Exception as e:
+            print(f"Error sending email: {str(e)}")
 
-def send_dojo_data_email(dojo, schedules):
+
+def send_dojo_data_email(app,dojo, schedules):
     # Format dojo information
     dojo_info = f"""
     New Dojo Listing:
@@ -62,10 +70,23 @@ def send_dojo_data_email(dojo, schedules):
         recipients=["dojofinderinfo@gmail.com"],
         body=email_body
     )
-    mail.send(msg)
+    Thread(target=send_async_email, args=(app, msg)).start()
      
 
-def get_dojo_details_with_schedules(dojo_id):
+cache = TTLCache(maxsize=128, ttl=43200)  #12 hours of cache 
+
+@cached(cache)
+def get_coordinates(address):
+    try:
+        location = locator.geocode(address)
+        if location:
+            return (location.latitude,location.longitude)
+    except Exception as e:
+        print(f"Geocoding error for {address}: {str(e)}")
+    return (None,None)
+
+
+def get_dojo_details_with_schedules(dojo_id): 
     conn = sqlite3.connect('./DB/dojo_listings.db')
     cursor = conn.cursor()
 
@@ -143,12 +164,7 @@ def add_dojo_to_premium():
     head_instructor = request.form.get('head_instructor')
 
     #Get the location coords of the dojo
-    location = locator.geocode(address)
-    latitude = None
-    longitude = None
-    if location:
-        latitude = location.latitude
-        longitude = location.longitude
+    latitude, longitude = get_coordinates(address)
     # Get the image files
     dojo_image = request.files.get('dojo_image')
     sensei_image = request.files.get('sensei_image')
@@ -238,7 +254,7 @@ def add_dojo_to_premium():
             'longitude': longitude
         }
 
-        send_dojo_data_email(dojo, schedule_entries)
+        send_dojo_data_email(app,dojo, schedule_entries)
 
         return redirect('/')
     
