@@ -148,9 +148,30 @@ def clear_all_data(confirm=False):
         # Close the connection
         conn.close()
 
+def add_username_collum():
+    # Connect to the SQLite database
+    conn = sqlite3.connect('dojo_listings.db')
+    cursor = conn.cursor()
+
+    # Add the username column if it doesn't already exist
+    try:
+        cursor.execute('ALTER TABLE users ADD COLUMN username TEXT')
+        print("Username column added successfully.")
+    except sqlite3.OperationalError as e:
+        if "duplicate column name" in str(e):
+            print("The username column already exists.")
+        else:
+            raise  # Re-raise unexpected errors
+
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
+
+
 if __name__ == "__main__":
-    check_data()
+    #check_data()
     #clear_all_data(confirm=True)
     #delete_by_id(1)
     #inspect_database('dojo_listings.db')
-    #delete_db(confirm=True) 
+    #delete_db(confirm=True)
+    add_username_collum()

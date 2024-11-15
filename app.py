@@ -8,6 +8,7 @@ from cachetools import cached, TTLCache
 from threading import Thread
 import numpy as np 
 import os
+import bcrypt
 
 
 app = Flask(__name__)
@@ -147,8 +148,6 @@ def dojo_details():
     dojo_id = request.args.get('dojo_id')
 
     dojo_details,schedules = get_dojo_details_with_schedules(dojo_id)
-
-    print("Test:",dojo_details)
 
     return render_template('dojo_details.html',dojo_details=dojo_details,schedules=schedules)
 
@@ -302,6 +301,30 @@ def get_near_me():
     conn.close()
 
     return render_template('dojo_list.html',dojos=dojos_near_user)
+
+@app.route('/signup',methods=['POST'])
+def signup():
+    username = request.form.get('username')
+    email = request.form.get('email')
+    password = request.form.get('password')
+    confirm_password = request.form.get('confirm_password')
+    if password != confirm_password:
+        return jsonify({'error':'password and confirm password do not match!'}),400
+    
+    try:
+        password_hash = bcrypt.hashpw(password.encode(),bcrypt.gensalt())
+        conn = sqlite3.connect('./DB/dojo_listings.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO users (username,email,password) VALUES (?,?,?)
+        ''',(username,email,password_hash))
+        conn.commit()
+        conn.close()
+        return redirect('/premium_dojo_form'),200
+    except sqlite3.Error as e:
+        return jsonify({'error':str(e)}),500
+
+        
          
 @app.route('/')
 def home():
