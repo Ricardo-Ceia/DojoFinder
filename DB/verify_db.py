@@ -174,4 +174,4 @@ if __name__ == "__main__":
     #delete_by_id(1)
     #inspect_database('dojo_listings.db')
     #delete_db(confirm=True)
-    add_username_collum()
+    #add_username_collum()
