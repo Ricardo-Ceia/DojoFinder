@@ -43,6 +43,7 @@ def create_database():
         ''')
     cursor.execute('''CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP

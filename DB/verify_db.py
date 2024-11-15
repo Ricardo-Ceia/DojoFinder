@@ -35,7 +35,7 @@ def check_data():
     conn = sqlite3.connect('dojo_listings.db')
     cursor = conn.cursor()
 
-    cursor.execute('SELECT * FROM dojos;')
+    cursor.execute('SELECT * FROM users;')
     # Fetch all results
     rows = cursor.fetchall()
 
@@ -169,7 +169,7 @@ def add_username_collum():
 
 
 if __name__ == "__main__":
-    #check_data()
+    check_data()
     #clear_all_data(confirm=True)
     #delete_by_id(1)
     #inspect_database('dojo_listings.db')

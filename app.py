@@ -304,10 +304,12 @@ def get_near_me():
 
 @app.route('/signup',methods=['POST'])
 def signup():
-    username = request.form.get('username')
-    email = request.form.get('email')
-    password = request.form.get('password')
-    confirm_password = request.form.get('confirm_password')
+    username = request.form.get('username').strip()
+    email = request.form.get('email').strip()
+    password = request.form.get('password').strip()
+    confirm_password = request.form.get('confirm_password').strip()
+    if not username or not email or not password or not confirm_password:
+        return jsonify({'error':'username, email, password and confirm password are required!'}),400
     if password != confirm_password:
         return jsonify({'error':'password and confirm password do not match!'}),400
     
@@ -315,14 +317,24 @@ def signup():
         password_hash = bcrypt.hashpw(password.encode(),bcrypt.gensalt())
         conn = sqlite3.connect('./DB/dojo_listings.db')
         cursor = conn.cursor()
+        cursor.execute('SELECT * FROM users WHERE email = ? OR username = ?',(email,username))
+        if cursor.fetchone():
+            return jsonify({'error':'email or username already exists!'}),400
         cursor.execute('''
             INSERT INTO users (username,email,password) VALUES (?,?,?)
         ''',(username,email,password_hash))
         conn.commit()
         conn.close()
-        return redirect('/premium_dojo_form'),200
+        return redirect('/premium_dojo_form'),302
     except sqlite3.Error as e:
         return jsonify({'error':str(e)}),500
+    
+@app.route('/login',methods=['POST'])
+def login():
+    email_or_username = request.form.get('email_or_username')
+    password = request.form.get('password')
+    if not email_or_username or not password:
+        return jsonify({'error':'email/username and password are required!'}),400
 
         
          
