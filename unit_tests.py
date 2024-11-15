@@ -36,7 +36,7 @@ class TestDojosApp(unittest.TestCase):
             'confirm_password': 'secure_password'
         })
         self.assertEqual(response.status_code, 302)
-        self.assertIn(response.headers['Location'],'/premium_dojo_form')
+        self.assertIn(response.headers['Location'],'/login')
 
 
     def test_signup_400_email_or_username_already_exists(self):
@@ -111,6 +111,40 @@ class TestDojosApp(unittest.TestCase):
                 'confirm_password': 'secure_password'
             })
             self.assertEqual(response.status_code, 500)
+
+    def test_login_302(self):
+        response = self.app.post('/login', data={
+            'email_or_username': 'test_user',
+            'password': 'secure_password'
+        })
+        self.assertEqual(response.status_code,302)
+        self.assertIn(response.headers['Location'],'/premium_dojo_form')
+
+    def test_login_404(self):
+        response = self.app.post('/login',data={
+            'email_or_username': 'faker_user',
+            'password': 'fake_password'
+        })
+        self.assertEqual(response.status_code,404)
+        self.assertIn(b'username or password is incorrect!',response.data)
+
+    def test_login_401(self):
+        response = self.app.post('/login',data={
+            'email_or_username': 'test_user',
+            'password': 'fake_password'
+        })
+        self.assertEqual(response.status_code,401)
+        self.assertIn(b'invalid password!',response.data)
+
+    def test_login_with_email_302(self):
+        response = self.app.post('/login', data={
+            'email_or_username': 'test_user@example.com',
+            'password': 'secure_password'
+        })
+        print(response.data)
+        self.assertEqual(response.status_code,302)
+        self.assertIn(response.headers['Location'],'/premium_dojo_form')
+
 
 if __name__ == '__main__':
     unittest.main()

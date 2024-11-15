@@ -325,7 +325,7 @@ def signup():
         ''',(username,email,password_hash))
         conn.commit()
         conn.close()
-        return redirect('/premium_dojo_form'),302
+        return redirect('/login'),302
     except sqlite3.Error as e:
         return jsonify({'error':str(e)}),500
     
@@ -335,6 +335,19 @@ def login():
     password = request.form.get('password')
     if not email_or_username or not password:
         return jsonify({'error':'email/username and password are required!'}),400
+    try:
+        conn = sqlite3.connect('./DB/dojo_listings.db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM users WHERE email = ? OR username = ?',(email_or_username,email_or_username))
+        user = cursor.fetchone()
+        conn.close()
+        if not user:
+            return jsonify({"error":"username or password is incorrect!"}),404
+        if not bcrypt.checkpw(password.encode(),user[3]):
+            return jsonify({'error':'invalid password!'}),401
+        return redirect('/premium_dojo_form'),302
+    except sqlite3.Error as e:
+        return jsonify({'error':str(e)}),500
 
         
          
