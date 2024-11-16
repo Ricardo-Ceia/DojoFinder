@@ -25,7 +25,8 @@ def create_database():
         head_instructor TEXT,
         latitude REAL,
         longitude REAL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        user_id INTEGER,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
     ''')
 

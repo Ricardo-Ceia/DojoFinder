@@ -13,6 +13,8 @@ import bcrypt
 
 app = Flask(__name__)
 
+app.secret_key = 'secret_key_benfica4895_glorioso'
+
 locator = Nominatim(user_agent="meGeocoder")
 
 UPLOAD_FOLDER = 'uploads/'
@@ -40,6 +42,8 @@ def send_dojo_data_email(app,dojo, schedules):
     # Format dojo information
     dojo_info = f"""
     New Dojo Listing:
+    User ID: {dojo['user_id']}
+    User Name: {dojo['username']}
     Name: {dojo['name']}
     Address: {dojo['address']}
     City: {dojo['city']}
@@ -153,6 +157,9 @@ def dojo_details():
 
 @app.route('/add_dojo_to_premium', methods=['POST'])
 def add_dojo_to_premium():
+    if 'user_id' not in session:
+        redirect('/login'),401
+    user_id = session['user_id']
     name = request.form.get('dojo_name')
     address = request.form.get('address')
     city = request.form.get('city')
@@ -211,11 +218,11 @@ def add_dojo_to_premium():
 
         cursor.execute('''
             INSERT INTO dojos (
-                name,address,city,website,phone,email,sensei_path,image_path,price_per_month,head_instructor,latitude,longitude
+                user_id,name,address,city,website,phone,email,sensei_path,image_path,price_per_month,head_instructor,latitude,longitude
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+            VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
         ''', (
-            name, address, city,website,
+            user_id,name, address, city,website,
             phone, email, sensei_image_path,dojo_image_path,price,head_instructor,latitude,longitude
         ))
         conn.commit()
@@ -241,6 +248,8 @@ def add_dojo_to_premium():
         conn.close()
 
         dojo = {
+            'user_id': user_id,
+            'username': session['username'],
             'name': name,
             'address': address,
             'city': city,
@@ -295,6 +304,9 @@ def get_near_me():
                            FROM dojos WHERE id LIKE ?""",
                             ('%' + str(dojo[0]) + '%',))
             dojo = cursor.fetchone()
+            
+            if not dojo:
+                return jsonify({'error':'No dojos found near you!'}),404
         
             dojos_near_user.append(dojo)
 
@@ -302,8 +314,16 @@ def get_near_me():
 
     return render_template('dojo_list.html',dojos=dojos_near_user)
 
-@app.route('/signup',methods=['POST'])
+@app.route('/signup',methods=['GET'])
 def signup():
+    return render_template('signup.html'),200
+
+@app.route('/login',methods=['GET'])
+def login():
+    return render_template('login.html'),200
+
+@app.route('/signup_form',methods=['POST'])
+def signup_form():
     username = request.form.get('username').strip()
     email = request.form.get('email').strip()
     password = request.form.get('password').strip()
@@ -319,7 +339,7 @@ def signup():
         cursor = conn.cursor()
         cursor.execute('SELECT * FROM users WHERE email = ? OR username = ?',(email,username))
         if cursor.fetchone():
-            return jsonify({'error':'email or username already exists!'}),400
+            return 
         cursor.execute('''
             INSERT INTO users (username,email,password) VALUES (?,?,?)
         ''',(username,email,password_hash))
@@ -327,10 +347,11 @@ def signup():
         conn.close()
         return redirect('/login'),302
     except sqlite3.Error as e:
-        return jsonify({'error':str(e)}),500
+        print("Internal server error: ",str(e)) 
+        return jsonify({'error':'Internal Server Error'}),500
     
-@app.route('/login',methods=['POST'])
-def login():
+@app.route('/login_form',methods=['POST'])
+def login_form():
     email_or_username = request.form.get('email_or_username')
     password = request.form.get('password')
     if not email_or_username or not password:
@@ -344,7 +365,10 @@ def login():
         if not user:
             return jsonify({"error":"username or password is incorrect!"}),404
         if not bcrypt.checkpw(password.encode(),user[3]):
-            return jsonify({'error':'invalid password!'}),401
+            return jsonify({"error":"username or password is incorrect!"}),404
+        
+        session['user_id'] = user[0]
+        session['username'] = user[1]
         return redirect('/premium_dojo_form'),302
     except sqlite3.Error as e:
         return jsonify({'error':str(e)}),500

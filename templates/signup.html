@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="{{ url_for('static', filename='js/signup.js') }}"></script>
   <title>Sign Up</title>
   <style>
     /* Basic styling for the body */
@@ -85,12 +87,20 @@
     .login-link a:hover {
       text-decoration: underline;
     }
+
+    .error-container {
+      color: red;
+      font-size: 0.875rem;
+      margin-bottom: 0.625rem;
+    }
+    
   </style>
 </head>
 <body>
   <div class="signup-container">
     <h2>Sign Up</h2>
-    <form class="signup-form" method="POST" action="/signup">
+    <div class="error-container"></div>
+    <form class="signup-form" method="POST" action="/signup_form">
       <input name="username" type="text" placeholder="Username" required>
       <input name="email" type="email" placeholder="Email" required>
       <input name="password" type="password" placeholder="Password" required>
@@ -102,5 +112,6 @@
       <a href="/login">Login</a>
     </div>
   </div>
+  <script>src="{{ url_for('static', filename='js/signup.js') }}"</script>
 </body>
 </html>

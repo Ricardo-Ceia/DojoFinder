@@ -11,16 +11,7 @@ $(document).ready(function() {
     // Add Dojo button handler
     $('.add-dojo-button').on('click', function(e) {
         e.preventDefault(); // Prevent default button behavior
-        $.ajax({
-            url: '/premium_dojo_form',
-            success: function(data) {
-                $('body').append(data);
-                $('#formOverlay').css('display', 'flex');
-            },
-            error: function() {
-                console.error('Failed to load add_dojo_form.html');
-            }
-        }); 
+        window.location.href = '/signup';
     });
 
     // Search form handler
@@ -64,9 +55,10 @@ $(document).ready(function() {
                 $('#response').html(response);
     
                 // Scroll to the #response div with smooth scroll
-                $('html, body').animate({
-                    scrollTop: $('#response').offset().top
-                }, 1000); // Scroll takes 1000ms (1 second)
+                document.getElementById('response').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             },
             error: function(xhr, status, error) {
                 // Log detailed error information
@@ -118,6 +110,12 @@ $(document).ready(function() {
                             status: status,
                             error: error
                         });
+
+                        if(xhr.status===404){
+                            const responseJson = JSON.parse(xhr.responseText);
+                            $('#response').html(`<p>${responseJson['error']}</p>`);
+                        }
+                        
                         $('#response').html('<p>Error fetching dojo data. Please try again later.</p>');
                     }
                 })

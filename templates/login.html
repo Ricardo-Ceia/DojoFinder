@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="{{ url_for('static', filename='js/login.js') }}"></script>
   <title>Login</title>
   <style>
     /* CSS styles */
@@ -82,7 +84,7 @@
 <body>
   <div class="login-container">
     <h2>Login</h2>
-    <form class="login-form" action="/login" method="post">
+    <form class="login-form" action="/login_form" method="POST">
       <input  name="email_or_username" type="text" placeholder="Username or Email" required>
       <input name="password" type="password" placeholder="Password" required>
       <button type="submit">Log In</button>
