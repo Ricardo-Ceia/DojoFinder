@@ -24,7 +24,7 @@ class TestDojosApp(unittest.TestCase):
         response = self.app.get('/premium_dojo_form')
         self.assertEqual(response.status_code, 200)
 
-    def test_signup_302(self):
+    def test_signup_200(self):
        # Generate unique username and email for the test
         unique_username = f"user_{int(time.time())}"
         unique_email = f"user{int(time.time())}@example.com"
@@ -35,8 +35,8 @@ class TestDojosApp(unittest.TestCase):
             'password': 'secure_password',
             'confirm_password': 'secure_password'
         })
-        self.assertEqual(response.status_code, 302)
-        self.assertIn(response.headers['Location'],'/login')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'/login',response.data)
 
 
     def test_signup_400_email_or_username_already_exists(self):
@@ -112,14 +112,6 @@ class TestDojosApp(unittest.TestCase):
             })
             self.assertEqual(response.status_code, 500)
 
-    def test_login_302(self):
-        response = self.app.post('/login_form', data={
-            'email_or_username': 'test_user',
-            'password': 'secure_password'
-        })
-        self.assertEqual(response.status_code,302)
-        self.assertIn(response.headers['Location'],'/premium_dojo_form')
-
     def test_login_404(self):
         response = self.app.post('/login_form',data={
             'email_or_username': 'faker_user',
@@ -136,13 +128,22 @@ class TestDojosApp(unittest.TestCase):
         self.assertEqual(response.status_code,401)
         self.assertIn(b'password is incorrect!',response.data)
 
+
+    def test_login_with_username_200(self):
+        response = self.app.post('/login_form', data={
+            'email_or_username': 'test_user',
+            'password': 'secure_password'
+        })
+        self.assertEqual(response.status_code,200)
+        self.assertIn(b'/premium_dojo_form',response.data)
+
     def test_login_with_email_302(self):
         response = self.app.post('/login_form', data={
             'email_or_username': 'test_user@example.com',
             'password': 'secure_password'
         })
-        self.assertEqual(response.status_code,302)
-        self.assertIn(response.headers['Location'],'/premium_dojo_form')
+        self.assertEqual(response.status_code,200)
+        self.assertIn(b'/premium_dojo_form',response.data)
 
 
 if __name__ == '__main__':

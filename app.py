@@ -339,7 +339,7 @@ def signup_form():
         cursor = conn.cursor()
         cursor.execute('SELECT * FROM users WHERE email = ? OR username = ?',(email,username))
         if cursor.fetchone():
-            return 
+            return jsonify({'error':'email or username already exists!'}),400
         cursor.execute('''
             INSERT INTO users (username,email,password) VALUES (?,?,?)
         ''',(username,email,password_hash))
