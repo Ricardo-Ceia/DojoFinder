@@ -345,7 +345,7 @@ def signup_form():
         ''',(username,email,password_hash))
         conn.commit()
         conn.close()
-        return redirect('/login'),302
+        return jsonify({'redirect':'/login'}),200
     except sqlite3.Error as e:
         print("Internal server error: ",str(e)) 
         return jsonify({'error':'Internal Server Error'}),500
@@ -369,7 +369,7 @@ def login_form():
         
         session['user_id'] = user[0]
         session['username'] = user[1]
-        return redirect('/premium_dojo_form'),302
+        return jsonify({'redirect':'/premium_dojo_form'}),200
     except sqlite3.Error as e:
         return jsonify({'error':str(e)}),500
 

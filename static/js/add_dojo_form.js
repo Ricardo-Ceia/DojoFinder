@@ -78,7 +78,6 @@ function formatPrice(input) {
 }
 
 function closeForm() {
-    $('#formOverlay').fadeOut(300, function() {
-        $(this).remove();
-    });
+    //redirect the user to HomePage on form close
+   window.location.href = '/'  
 } 
