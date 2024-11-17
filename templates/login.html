@@ -79,11 +79,17 @@
     .login-form button:hover {
       background-color: var(--primary-hover);
     }
+    .error-container {
+      color: red;
+      font-size: 0.875rem;
+      margin-bottom: 0.625rem;
+    }
   </style>
 </head>
 <body>
   <div class="login-container">
     <h2>Login</h2>
+    <div class = "error-container"></div>
     <form class="login-form" action="/login_form" method="POST">
       <input  name="email_or_username" type="text" placeholder="Username or Email" required>
       <input name="password" type="password" placeholder="Password" required>

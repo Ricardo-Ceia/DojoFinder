@@ -365,7 +365,7 @@ def login_form():
         if not user:
             return jsonify({"error":"username or password is incorrect!"}),404
         if not bcrypt.checkpw(password.encode(),user[3]):
-            return jsonify({"error":"username or password is incorrect!"}),404
+            return jsonify({"error":"password is incorrect!"}),401
         
         session['user_id'] = user[0]
         session['username'] = user[1]
