@@ -8,14 +8,17 @@ from cachetools import cached, TTLCache
 from threading import Thread
 import numpy as np 
 import os
+from functools import wraps
 import bcrypt
-
 
 app = Flask(__name__)
 
 app.secret_key = 'secret_key_benfica4895_glorioso'
 
 locator = Nominatim(user_agent="meGeocoder")
+
+ADMIN_USERNAME = 'admin_ricardo'
+ADMIN_PASSWORD = 'admin_glorioso'
 
 UPLOAD_FOLDER = 'uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -29,6 +32,14 @@ app.config['MAIL_PASSWORD'] = 'apzg wucx yhsr kqto'  # Replace with your App Pas
 app.config['MAIL_DEFAULT_SENDER'] = 'dojofinderinfo@gmail.com'  # Default sender email
 
 mail = Mail(app)
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args,**kwargs):
+        if 'amdin_logged_in' not in session:
+            return redirect(url_for('admin_login'))
+        return f(*args,**kwargs)
+    return decorated_function
 
 def send_async_email(app, msg):
     with app.app_context():
@@ -372,6 +383,32 @@ def login_form():
         return jsonify({'redirect':'/premium_dojo_form'}),200
     except sqlite3.Error as e:
         return jsonify({'error':str(e)}),500
+
+@app.route('/admin_login',methods=['GET'])
+def admin_login():
+    if 'admin_logged_in' in session:
+        return redirect('/admin_dashboard'),302
+    return render_template('admin_login.html'),200 
+
+@app.route('admin_login_form',methods=['POST'])
+def admin_login_form():
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    if not username or not password:
+        return jsonify({'error':'username and password are required!'}),400
+
+    if username != ADMIN_USERNAME or password != ADMIN_PASSWORD:
+        return jsonify({'error':'username or password is incorrect!'}),401
+
+    session['admin_logged_in'] = True
+    return jsonify({'redirect':'/admin_dashboard'}),200
+
+@app.route('admin_dashboard',methods=['GET'])
+@admin_required
+def admin_dashboard():
+    return render_template('admin_dashboard.html'),200
+
 
         
          
