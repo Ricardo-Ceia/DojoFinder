@@ -14,11 +14,10 @@ import bcrypt
 app = Flask(__name__)
 
 app.secret_key = 'secret_key_benfica4895_glorioso'
-
-locator = Nominatim(user_agent="meGeocoder")
-
 ADMIN_USERNAME = 'admin_ricardo'
 ADMIN_PASSWORD = 'admin_glorioso'
+
+locator = Nominatim(user_agent="meGeocoder")
 
 UPLOAD_FOLDER = 'uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -36,7 +35,7 @@ mail = Mail(app)
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args,**kwargs):
-        if 'amdin_logged_in' not in session:
+        if 'admin_logged_in' not in session:
             return redirect(url_for('admin_login'))
         return f(*args,**kwargs)
     return decorated_function
@@ -386,15 +385,13 @@ def login_form():
 
 @app.route('/admin_login',methods=['GET'])
 def admin_login():
-    if 'admin_logged_in' in session:
-        return redirect('/admin_dashboard'),302
     return render_template('admin_login.html'),200 
 
-@app.route('admin_login_form',methods=['POST'])
+@app.route('/admin_login_form',methods=['POST'])
 def admin_login_form():
     username = request.form.get('username')
     password = request.form.get('password')
-
+    print(f"usernmame:{username} password:{password}")
     if not username or not password:
         return jsonify({'error':'username and password are required!'}),400
 
@@ -404,7 +401,7 @@ def admin_login_form():
     session['admin_logged_in'] = True
     return jsonify({'redirect':'/admin_dashboard'}),200
 
-@app.route('admin_dashboard',methods=['GET'])
+@app.route('/admin_dashboard')
 @admin_required
 def admin_dashboard():
     return render_template('admin_dashboard.html'),200
