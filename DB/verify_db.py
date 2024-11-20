@@ -171,7 +171,7 @@ def add_username_collum():
 
 
 if __name__ == "__main__":
-    #check_data()
+    check_data()
     #clear_all_data(confirm=True)
     #delete_by_id(1)
     #inspect_database('dojo_listings.db')
