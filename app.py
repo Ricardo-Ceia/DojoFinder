@@ -179,25 +179,26 @@ def dojo_details():
 def add_dojo_to_premium():
     if 'user_id' not in session:
         redirect('/login'),401
+
     user_id = session['user_id']
+    username = session['username']  
     name = request.form.get('dojo_name')
     address = request.form.get('address')
     city = request.form.get('city')
     website = request.form.get('website') or None
+    phone = request.form.get('phone')
     email = request.form.get('email')
     phone = request.form.get('phone')
-    price = request.form.get('class_price') 
+    price = request.form.get('class_price')
     head_instructor = request.form.get('head_instructor')
 
-    #Get the location coords of the dojo
-    latitude, longitude = get_coordinates(address)
-    # Get the image files
+    print(f"ADD_DOJO_TO_PREMIUM: name:{name} price{price}")
+    #get the image files
     dojo_image = request.files.get('dojo_image')
     sensei_image = request.files.get('sensei_image')
-    #get the schedule data
-    index=0
-    schedule_entries = []
 
+    index = 0
+    schedule_entries = []
     while True:
         day_of_week = request.form.get(f'schedules[{index}][day_of_week]')
         start_time = request.form.get(f'schedules[{index}][start_time]')
@@ -205,7 +206,7 @@ def add_dojo_to_premium():
         instructor = request.form.get(f'schedules[{index}][instructor]')
         competition_only = request.form.get(f'schedules[{index}][competition_only]') == "on"
         age_range = request.form.get(f'schedules[{index}][age_range]')
-        
+
         if not day_of_week or not start_time or not end_time or not instructor or not age_range:
             break
 
@@ -217,75 +218,46 @@ def add_dojo_to_premium():
             'competition_only': competition_only,
             'age_range': age_range
         })
-
         index += 1
-
-    # Check if main dojo image exists
+    
+    dojo_image_path = None
+    sensei_image_path = None
     if dojo_image:
-        # Save dojo image
         dojo_image_path = os.path.join(app.config['UPLOAD_FOLDER'], dojo_image.filename)
         dojo_image.save(dojo_image_path)
+    
+    if sensei_image:
+        sensei_image_path = os.path.join(app.config['UPLOAD_FOLDER'], sensei_image.filename)
+        sensei_image.save(sensei_image_path)
 
-        # Save sensei image if provided
-        sensei_image_path = None
-        if sensei_image:
-            sensei_image_path = os.path.join(app.config['UPLOAD_FOLDER'], sensei_image.filename)
-            sensei_image.save(sensei_image_path)
-
-        # Database connection
-        conn = sqlite3.connect('./DB/dojo_listings.db')
-        cursor = conn.cursor()
-
-        cursor.execute('''
-            INSERT INTO dojos (
-                user_id,name,address,city,website,phone,email,sensei_path,image_path,price_per_month,head_instructor,latitude,longitude
-            )
-            VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
-        ''', (
-            user_id,name, address, city,website,
-            phone, email, sensei_image_path,dojo_image_path,price,head_instructor,latitude,longitude
-        ))
-        conn.commit()
-
-        #get the id of the dojo
-        dojo_id = cursor.lastrowid
-            
-        for schedule_entry in schedule_entries:
-            cursor.execute("""
-            INSERT INTO schedules (
-                dojo_id, day_of_week, start_time, end_time, instructor, competition_only,age_range
-            ) VALUES (?, ?, ?, ?, ?, ?,?)
-        """, (
-            dojo_id,
-            schedule_entry['day_of_week'],
-            schedule_entry['start_time'],
-            schedule_entry['end_time'],
-            schedule_entry['instructor'],
-            schedule_entry['competition_only'],
-            schedule_entry['age_range']
-            ))
-        conn.commit()
-        conn.close()
-
-        dojo = {
+    checkout_session = stripe.checkout.Session.create(
+        payment_method_types = ['card'],
+        line_items=[{
+            'price': 'price_1QMu0bCfp6zxM40osSS1EmTh',
+            'quantity': 1
+        }],
+        mode='subscription',
+        success_url=f"{app.config['BASE_URL']}/success?session_id={{CHECKOUT_SESSION_ID}}",
+        cancel_url=f"{app.config['BASE_URL']}/cancel", 
+        metadata={
             'user_id': user_id,
-            'username': session['username'],
-            'name': name,
+            'dojo_name': name,
             'address': address,
             'city': city,
             'website': website,
             'email': email,
             'phone': phone,
-            'price': price,
+            'class_price': price,
             'head_instructor': head_instructor,
-            'latitude': latitude,
-            'longitude': longitude
+            'dojo_image_path': dojo_image_path,
+            'sensei_image_path': sensei_image_path,
+            'schedules': json.dumps(schedule_entries),
+            'username':username
         }
+    )
+    return redirect(checkout_session.url),303
+ 
 
-        send_dojo_data_email(app,dojo, schedule_entries)
-
-        return redirect(url_for('create_checkout_session'), code=307)
-    
 @app.route('/get_near_me',methods=['POST'])
 def get_near_me():
     #location of the user
@@ -415,27 +387,6 @@ def admin_login_form():
 @admin_required
 def admin_dashboard():
     return render_template('admin_dashboard.html'),200
-
-@app.route('/create-checkout-session',methods=['POST'])
-def create_checkout_session():
-    if 'user_id' not in session:
-        return jsonify({'error':'user is not logged in!'}),401
-    try:
-        checkout_session = stripe.checkout.Session.create(
-            payment_method_types = ['card'],
-            line_items=[{
-                'price': 'price_1QMu0bCfp6zxM40osSS1EmTh',
-                'quantity': 1
-            }],
-            mode='subscription',
-            metadata={'user_id':session['user_id']},
-            success_url=f"{app.config['BASE_URL']}/success?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=f"{app.config['BASE_URL']}/cancel",
-        )
-        return redirect(checkout_session.url),303
-    except Exception as e:
-        print(e)
-        return jsonify({'error':'Server error'}),500
     
 @app.route('/success',methods=['GET'])
 def payment_success():
@@ -471,15 +422,81 @@ def webhook_received():
     data_object = data['object']
 
     print('event ' + event_type)
-    user_id = data_object.get('metadata',{}).get('user_id')
+    #user_id = data_object.get('metadata',{}).get('user_id')
+    dojo_id = data_object.get('metadata',{}).get('dojo_id')
     if event_type == 'checkout.session.completed':
-        print(f"Session id: {user_id}")
         # Payment is successful and the subscription is created.
+        user_id = data_object.get('metadata',{}).get('user_id')
+        ###The username is just used for the verification email
+        username = data_object.get('metadata',{}).get('username')
+        #####
+        name = data_object.get('metadata',{}).get('dojo_name')
+        address = data_object.get('metadata',{}).get('address')
+        city = data_object.get('metadata',{}).get('city')
+        website = data_object.get('metadata',{}).get('website')
+        email = data_object.get('metadata',{}).get('email')
+        phone = data_object.get('metadata',{}).get('phone')
+        price = data_object.get('metadata',{}).get('class_price')
+        head_instructor = data_object.get('metadata',{}).get('head_instructor')
+        dojo_image_path = data_object.get('metadata',{}).get('dojo_image_path')
+        sensei_image_path = data_object.get('metadata',{}).get('sensei_image_path')
+        latitude,longitude = get_coordinates(address)
+        print(f"TEST:{user_id} {name} {address} {city} {website} {email} {phone} {price} {head_instructor} {latitude} {longitude} {sensei_image_path} {dojo_image_path}")
         conn = sqlite3.connect('./DB/dojo_listings.db')
         cursor = conn.cursor()
-        cursor.execute('''UPDATE users SET valid_subscription = ? WHERE id = ?''', (True, user_id))
+
+        cursor.execute('''
+            INSERT INTO dojos (
+                user_id, name, address, city, website, phone, email, 
+                sensei_path, image_path, price_per_month, head_instructor, 
+                latitude, longitude, valid_subscription
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            user_id, name, address, city, website, phone, email, 
+            sensei_image_path, dojo_image_path, price, head_instructor, 
+            latitude, longitude, True
+        ))
         conn.commit()
-        conn.close()	
+
+        dojo_id = cursor.lastrowid
+
+        schedules = json.loads(data_object.get('metadata', {}).get('schedules', '[]'))
+
+        for schedule_entry  in schedules:
+            cursor.execute("""
+                INSERT INTO schedules (
+                    dojo_id, day_of_week, start_time, end_time, 
+                    instructor, competition_only, age_range
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (
+                dojo_id,
+                schedule_entry['day_of_week'],
+                schedule_entry['start_time'],
+                schedule_entry['end_time'],
+                schedule_entry['instructor'],
+                schedule_entry['competition_only'],
+                schedule_entry['age_range']
+            ))
+        
+        conn.commit()
+        conn.close()
+        dojo = {
+            'user_id': user_id,
+            'username': username,
+            'name': name,
+            'address': address,
+            'city': city,
+            'website': website,
+            'email': email,
+            'phone': phone,
+            'price': price,
+            'head_instructor': head_instructor,
+            'latitude': latitude,
+            'longitude': longitude
+        }
+        send_dojo_data_email(app, dojo, schedules)
+
         print('🔔 Payment succeeded!')
     elif event_type == 'customer.subscription.trial_will_end':
         print('Subscription trial will end')
@@ -490,11 +507,6 @@ def webhook_received():
     elif event_type == 'customer.subscription.deleted':
         # handle subscription canceled automatically based
         # upon your subscription settings. Or if the user cancels it.
-        conn = sqlite3.connect('./DB/dojo_listings.db')
-        cursor = conn.cursor()
-        cursor.execute('''UPDATE users SET valid_subscription = ? WHERE id = ?''', (False, user_id))
-        conn.commit()
-        conn.close()
         print('Subscription canceled: %s', event.id)
     elif event_type == 'entitlements.active_entitlement_summary.updated':
         # handle active entitlement summary updated

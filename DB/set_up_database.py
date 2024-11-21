@@ -26,6 +26,7 @@ def create_database():
         latitude REAL,
         longitude REAL,
         user_id INTEGER,
+        valid_subscription BOOLEAN DEFAULT FALSE,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
     ''')
@@ -47,7 +48,6 @@ def create_database():
     username VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    valid_subscription BOOLEAN DEFAULT FALSE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )''')
 
