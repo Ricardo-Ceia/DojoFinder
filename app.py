@@ -8,8 +8,10 @@ from cachetools import cached, TTLCache
 from threading import Thread
 import numpy as np 
 import os
+import stripe 
 from functools import wraps
 import bcrypt
+import json
 
 app = Flask(__name__)
 
@@ -19,10 +21,18 @@ ADMIN_PASSWORD = 'admin_glorioso'
 
 locator = Nominatim(user_agent="meGeocoder")
 
+#BASE URL
+app.config['BASE_URL'] = 'http://localhost:5000'
+
 UPLOAD_FOLDER = 'uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+#stripe
+app.config['STRIPE_PUBLIC_KEY'] = 'pk_test_51QCngxCfp6zxM40oNNjzGLTdTviDO0dEqsnYh81vw7AjuAXLuF5RfjNf2krsTECOAvyo2268w40E4xSe9iZ2t7Ql007vGl1yXV'
+app.config['STRIPE_SECRET_KEY'] = 'sk_test_51QCngxCfp6zxM40ow5BD0oDZeR7pgmmP9GBtwhqpxurKGOPnDHJZxn8f1DsfS65DgBDnj9gbbfKSlqsDfIoPKV6700sE1C5eLR'
+stripe.api_key = app.config['STRIPE_SECRET_KEY']
 
+#mail configuratio
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
@@ -274,7 +284,7 @@ def add_dojo_to_premium():
 
         send_dojo_data_email(app,dojo, schedule_entries)
 
-        return redirect('/')
+        return redirect(url_for('create_checkout_session'), code=307)
     
 @app.route('/get_near_me',methods=['POST'])
 def get_near_me():
@@ -406,9 +416,91 @@ def admin_login_form():
 def admin_dashboard():
     return render_template('admin_dashboard.html'),200
 
+@app.route('/create-checkout-session',methods=['POST'])
+def create_checkout_session():
+    if 'user_id' not in session:
+        return jsonify({'error':'user is not logged in!'}),401
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types = ['card'],
+            line_items=[{
+                'price': 'price_1QMu0bCfp6zxM40osSS1EmTh',
+                'quantity': 1
+            }],
+            mode='subscription',
+            metadata={'user_id':session['user_id']},
+            success_url=f"{app.config['BASE_URL']}/success?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=f"{app.config['BASE_URL']}/cancel",
+        )
+        return redirect(checkout_session.url),303
+    except Exception as e:
+        print(e)
+        return jsonify({'error':'Server error'}),500
+    
+@app.route('/success',methods=['GET'])
+def payment_success():
+    return render_template('payment_success.html'),200
 
-        
-         
+@app.route('/cancel',methods=['GET'])
+def payment_cancel():
+    return render_template('payment_cancel.html'),200
+
+@app.route('/webhook', methods=['POST'])
+def webhook_received():
+    # Replace this endpoint secret with your endpoint's unique secret
+    # If you are testing with the CLI, find the secret by running 'stripe listen'
+    # If you are using an endpoint defined with the API or dashboard, look in your webhook settings
+    # at https://dashboard.stripe.com/webhooks
+    webhook_secret = 'whsec_a3034c19cb5d7228259ab30d30cfa1bf467baefce55adb3259c64d10c23928dc'
+    request_data = json.loads(request.data)
+
+    if webhook_secret:
+        # Retrieve the event by verifying the signature using the raw body and secret if webhook signing is configured.
+        signature = request.headers.get('stripe-signature')
+        try:
+            event = stripe.Webhook.construct_event(
+                payload=request.data, sig_header=signature, secret=webhook_secret)
+            data = event['data']
+        except Exception as e:
+            return e
+        # Get the type of webhook event sent - used to check the status of PaymentIntents.
+        event_type = event['type']
+    else:
+        data = request_data['data']
+        event_type = request_data['type']
+    data_object = data['object']
+
+    print('event ' + event_type)
+    user_id = data_object.get('metadata',{}).get('user_id')
+    if event_type == 'checkout.session.completed':
+        print(f"Session id: {user_id}")
+        # Payment is successful and the subscription is created.
+        conn = sqlite3.connect('./DB/dojo_listings.db')
+        cursor = conn.cursor()
+        cursor.execute('''UPDATE users SET valid_subscription = ? WHERE id = ?''', (True, user_id))
+        conn.commit()
+        conn.close()	
+        print('🔔 Payment succeeded!')
+    elif event_type == 'customer.subscription.trial_will_end':
+        print('Subscription trial will end')
+    elif event_type == 'customer.subscription.created':
+        print('Subscription created %s', event.id)
+    elif event_type == 'customer.subscription.updated':
+        print('Subscription created %s', event.id)
+    elif event_type == 'customer.subscription.deleted':
+        # handle subscription canceled automatically based
+        # upon your subscription settings. Or if the user cancels it.
+        conn = sqlite3.connect('./DB/dojo_listings.db')
+        cursor = conn.cursor()
+        cursor.execute('''UPDATE users SET valid_subscription = ? WHERE id = ?''', (False, user_id))
+        conn.commit()
+        conn.close()
+        print('Subscription canceled: %s', event.id)
+    elif event_type == 'entitlements.active_entitlement_summary.updated':
+        # handle active entitlement summary updated
+        print('Active entitlement summary updated: %s', event.id)
+
+    return jsonify({'status': 'success'})
 @app.route('/')
 def home():
     return render_template('./homePage.html')

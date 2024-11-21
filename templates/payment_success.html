@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Successful</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+            padding: 20px;
+        }
+
+        html {
+            height: -webkit-fill-available;
+        }
+
+        .success-card {
+            background: white;
+            padding: clamp(20px, 5vw, 40px);
+            border-radius: clamp(12px, 3vw, 20px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            animation: fadeIn 0.6s ease-out;
+            width: min(90%, 400px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .checkmark {
+            width: clamp(50px, 15vw, 80px);
+            height: clamp(50px, 15vw, 80px);
+            border-radius: 50%;
+            background: #4CAF50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            animation: scaleIn 0.5s ease-out 0.2s both;
+            position: relative;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .checkmark::after {
+            content: '';
+            width: clamp(15px, 4vw, 30px);
+            height: clamp(30px, 8vw, 60px);
+            border: solid white;
+            border-width: 0 clamp(3px, 1vw, 6px) clamp(3px, 1vw, 6px) 0;
+            transform: rotate(45deg) translate(-5px, -5px);
+            animation: drawCheck 0.3s ease-out 0.7s both;
+            position: absolute;
+        }
+
+        @keyframes drawCheck {
+            from {
+                height: 0;
+            }
+            to {
+                height: clamp(30px, 8vw, 60px);
+            }
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: clamp(20px, 5vw, 28px);
+            line-height: 1.3;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+            font-size: clamp(14px, 4vw, 16px);
+            padding: 0 clamp(10px, 3vw, 20px);
+        }
+
+        .home-button {
+            display: inline-block;
+            padding: clamp(10px, 3vw, 12px) clamp(20px, 5vw, 30px);
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: clamp(14px, 4vw, 16px);
+            width: fit-content;
+            min-width: 200px;
+        }
+
+        @media (hover: hover) {
+            .home-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+            }
+        }
+
+        .home-button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 380px) {
+            .success-card {
+                padding: 15px;
+            }
+
+            .home-button {
+                min-width: 160px;
+            }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            .success-card {
+                padding: 15px;
+            }
+
+            .checkmark {
+                margin-bottom: 10px;
+            }
+
+            h1 {
+                margin-bottom: 10px;
+            }
+
+            p {
+                margin-bottom: 15px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .success-card,
+            .checkmark,
+            .checkmark::after {
+                animation: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="success-card">
+        <div class="checkmark"></div>
+        <h1>Payment Successful!</h1>
+        <p>Your dojo is now listed.</p>
+        <a href="/" class="home-button">Return to Home</a>
+    </div>
+</body>
+</html>

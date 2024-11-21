@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="{{ url_for('static', filename='js/add_dojo_form.js') }}"></script>
     <style>
 /* Previous styles remain the same */
 
@@ -597,7 +599,7 @@
         <div class="form-container">
             <button class="close-btn" onclick="closeForm()">×</button>
 
-            <form action="/add_dojo_to_premium" method="POST" id="add_dojo_form_premium" enctype="multipart/form-data">
+            <form class="add_dojo_form_premium" action="/add_dojo_to_premium" method="POST" id="add_dojo_form_premium" enctype="multipart/form-data">
                 <input name="dojo_name" type="text" placeholder="Dojo Name" required>
                 <input name="address" type="text" placeholder="Address" required>
                 <input name="city" type="text" placeholder="City" required>
