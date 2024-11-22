@@ -164,6 +164,9 @@ def get_dojos():
 
 @app.route('/premium_dojo_form',methods=['GET'])
 def premiun_dojo_form():
+    if 'user_id' not in session:
+        session['intent_redirect'] = '/premium_dojo_form'
+        return redirect('/login'),307
     return render_template('premium_dojo_form.html'),200
 
 
@@ -178,7 +181,8 @@ def dojo_details():
 @app.route('/add_dojo_to_premium', methods=['POST'])
 def add_dojo_to_premium():
     if 'user_id' not in session:
-        redirect('/login'),401
+        session['intent_redirect'] = '/premium_dojo_form'
+        return redirect('/login'),307
 
     user_id = session['user_id']
     username = session['username']  
@@ -362,7 +366,11 @@ def login_form():
         
         session['user_id'] = user[0]
         session['username'] = user[1]
-        return jsonify({'redirect':'/premium_dojo_form'}),200
+        next_url = session.pop('intent_redirect',None)
+        print("NEXT_URL:",next_url)
+        if not next_url:
+            next_url = '/'
+        return jsonify({'redirect':next_url}),200
     except sqlite3.Error as e:
         return jsonify({'error':str(e)}),500
 
@@ -525,10 +533,11 @@ def webhook_received():
 @app.route('/manage_dojos',methods=['GET'])
 def manage_dojos():
     if 'user_id' not in session:
-        return redirect('/login'),401
+        session['intent_redirect'] = '/manage_dojos'
+        return redirect('/login'),307
     user_id = session['user_id']
 
-    conn = sqlite3.connect('/./DB/dojo_listings.db')
+    conn = sqlite3.connect('./DB/dojo_listings.db')
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM dojos WHERE user_id = ?',(user_id,))
     dojos = cursor.fetchall()
@@ -539,7 +548,6 @@ def manage_dojos():
 
 @app.route('/')
 def home():
-    print("Init SESSION:",session)
     return render_template('./homePage.html')
 
 if __name__ == '__main__':

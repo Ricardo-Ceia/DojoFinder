@@ -11,7 +11,7 @@ $(document).ready(function() {
     // Add Dojo button handler
     $('.add-dojo-button').on('click', function(e) {
         e.preventDefault(); // Prevent default button behavior
-        window.location.href = '/signup';
+        window.location.href = '/premium_dojo_form'; // Redirect to login page
     });
 
     // Search form handler
