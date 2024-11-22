@@ -75,6 +75,30 @@
       display: block;
       margin: 0 auto;
     }
+    .signup-link {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px; /* Space between text and link */
+    }
+
+    .singup-link p {
+      margin: 0;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .signup-link a {
+      font-size: 14px;
+      color: #007BFF;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
 
     .login-form button:hover {
       background-color: var(--primary-hover);
@@ -94,6 +118,10 @@
       <input  name="email_or_username" type="text" placeholder="Username or Email" required>
       <input name="password" type="password" placeholder="Password" required>
       <button type="submit">Log In</button>
+      <div class="signup-link">
+        <p>Don't have an account?</p>
+        <a href="/signup">Sign Up</a>
+      </div>
     </form>
   </div>
 </body>

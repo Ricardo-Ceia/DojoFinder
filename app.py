@@ -346,6 +346,7 @@ def signup_form():
 def login_form():
     email_or_username = request.form.get('email_or_username')
     password = request.form.get('password')
+
     if not email_or_username or not password:
         return jsonify({'error':'email/username and password are required!'}),400
     try:
@@ -507,14 +508,38 @@ def webhook_received():
     elif event_type == 'customer.subscription.deleted':
         # handle subscription canceled automatically based
         # upon your subscription settings. Or if the user cancels it.
+        conn = sqlite3.connect('./DB/dojo_listings.db')
+        cursor = conn.cursor()
+        cursor.execute('''UPDATATE dojos SET valid_subscription = 0 WHERE id = ?''',(dojo_id,))
+        conn.commit()
+        conn.close()
+        
         print('Subscription canceled: %s', event.id)
     elif event_type == 'entitlements.active_entitlement_summary.updated':
         # handle active entitlement summary updated
         print('Active entitlement summary updated: %s', event.id)
 
     return jsonify({'status': 'success'})
+
+
+@app.route('/manage_dojos',methods=['GET'])
+def manage_dojos():
+    if 'user_id' not in session:
+        return redirect('/login'),401
+    user_id = session['user_id']
+
+    conn = sqlite3.connect('/./DB/dojo_listings.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM dojos WHERE user_id = ?',(user_id,))
+    dojos = cursor.fetchall()
+    conn.close()
+    return render_template('manage_dojos.html',dojos=dojos),200
+
+
+
 @app.route('/')
 def home():
+    print("Init SESSION:",session)
     return render_template('./homePage.html')
 
 if __name__ == '__main__':

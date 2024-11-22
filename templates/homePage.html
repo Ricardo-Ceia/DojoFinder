@@ -55,6 +55,53 @@
             animation: fadeIn 1s ease-out;
         }
 
+.site-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.manage-dojos-container {
+    margin-left: auto;
+}
+
+.manage-dojos-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: var(--shadow-md);
+}
+
+.manage-dojos-button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .site-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .manage-dojos-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
         .find_dojo_h1 {
             font-size: clamp(2.5rem, 5vw, 4rem);
             color: var(--white);
@@ -219,6 +266,16 @@
 </head>
 <body>
     <main>
+        <header class="site-header">
+            <div class="manage-dojos-container">
+                <a href="/login" class="manage-dojos-button">
+                    Manage Your Dojos⛩️
+                </a>
+            </div>
+</header>
+                </a>
+            </div>
+        </header>
         <section id="hero" class="hero">
             <div class="overlay"></div>
            <!-- <button id="add-dojo-btn" class="add-dojo-button">Add Dojo</button>-->
