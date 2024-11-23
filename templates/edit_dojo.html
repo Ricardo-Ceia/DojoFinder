@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Dojo Information</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #500FDB;
+            --primary-hover: #3e0cb3;
+            --accent-color: #ff3333;
+            --text-color: #333;
+            --text-light: #717171;
+            --background: #f5f5f7;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-section h2 {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="time"],
+        input[type="url"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .schedule-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .schedule-card .remove-schedule {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            color: var(--accent-color);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+        /* Previous styles remain the same */
+        .image-preview {
+            width: 200px;
+            height: 200px;
+            border-radius: var(--radius);
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 2px dashed #ddd;
+            padding: 0.5rem;
+        }
+
+        .price-input {
+            position: relative;
+        }
+
+        .price-input input {
+            padding-left: 1.5rem;
+        }
+
+        .price-input::before {
+            content: '$';
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .image-upload-container {
+            margin-bottom: 1rem;
+        }
+
+        .image-upload-label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .current-image-name {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <script></script>
+        <h1>Edit Dojo Information</h1>
+        <form id="dojoForm" action="/edit_dojo/{{dojo_details[9]}}" method="POST" enctype="multipart/form-data" data-dojo-id="{{ dojo_details[0] }}">
+            <div class="form-section">
+                <h2>Basic Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Dojo Name</label>
+                        <input type="text" id="name" name="name" value="{{ dojo_details[0] }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" name="address" value="{{ dojo_details[1] }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="website">Website</label>
+                        <input type="url" id="website" name="website" value="{{ dojo_details[2] }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="{{ dojo_details[3] }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone" name="phone" value="{{ dojo_details[6] }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="head_instructor">Head Instructor</label>
+                        <input type="text" id="head_instructor" name="head_instructor" value="{{ dojo_details[7] }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="price_per_month">Monthly Price</label>
+                        <div class="price-input">
+                            <input type="number" id="price_per_month" name="price_per_month" value="{{ dojo_details[8] }}" step="0.1" min="0" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Images</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="image-upload-label">Dojo Image</label>
+                        {% if dojo_details[5] %}
+                        <img src="{{ url_for('uploaded_file', filename=dojo_details[5].split('/')[-1]) }}" alt="Current dojo image" class="image-preview">
+                        {% endif %}
+                        <input type="file" id="dojo_image" name="dojo_image" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label class="image-upload-label">Sensei Image</label>
+                        {% if dojo_details[4] %}
+                        <img src="{{ url_for('uploaded_file', filename=dojo_details[4].split('/')[-1]) }}" alt="Current dojo image" class="image-preview">
+                        {% endif %}
+                        <input type="file" id="sensei_image" name="sensei_image" accept="image/*">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Schedules</h2>
+                <div id="schedules-container">
+                    {% for schedule in schedules %}
+                    <div class="schedule-card">
+                        <button type="button" class="remove-schedule" onclick="this.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="day_{{ loop.index }}">Day of Week</label>
+                                <select id="day_{{ loop.index }}" name="day_of_week[]" required>
+                                    {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+                                    <option value="{{ day }}" {{ 'selected' if day == schedule[0] }}>{{ day }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="start_time_{{ loop.index }}">Start Time</label>
+                                <input type="time" id="start_time_{{ loop.index }}" name="start_time[]" value="{{ schedule[1] }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="end_time_{{ loop.index }}">End Time</label>
+                                <input type="time" id="end_time_{{ loop.index }}" name="end_time[]" value="{{ schedule[2] }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="instructor_{{ loop.index }}">Instructor</label>
+                                <input type="text" id="instructor_{{ loop.index }}" name="instructor[]" value="{{ schedule[3] }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="age_range_{{ loop.index }}">Age Range</label>
+                                <input type="text" id="age_range_{{ loop.index }}" name="age_range[]" value="{{ schedule[5] }}">
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" id="competition_{{ loop.index }}" name="competition_only[]" {{ 'checked' if schedule[4] }}>
+                                <label for="competition_{{ loop.index }}">Competition Only</label>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="addSchedule()">
+                    <i class="fas fa-plus"></i> Add Schedule
+                </button>
+            </div>
+
+            <div class="actions">
+                <a href="/manage_dojos" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function addSchedule() {
+            const container = document.getElementById('schedules-container');
+            const scheduleCount = container.children.length;
+            
+            const scheduleCard = document.createElement('div');
+            scheduleCard.className = 'schedule-card';
+            scheduleCard.innerHTML = `
+                <button type="button" class="remove-schedule" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="day_new_${scheduleCount}">Day of Week</label>
+                        <select id="day_new_${scheduleCount}" name="day_of_week[]" required>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="start_time_new_${scheduleCount}">Start Time</label>
+                        <input type="time" id="start_time_new_${scheduleCount}" name="start_time[]" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="end_time_new_${scheduleCount}">End Time</label>
+                        <input type="time" id="end_time_new_${scheduleCount}" name="end_time[]" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="instructor_new_${scheduleCount}">Instructor</label>
+                        <input type="text" id="instructor_new_${scheduleCount}" name="instructor[]">
+                    </div>
+                    <div class="form-group">
+                        <label for="age_range_new_${scheduleCount}">Age Range</label>
+                        <input type="text" id="age_range_new_${scheduleCount}" name="age_range[]">
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="competition_new_${scheduleCount}" name="competition_only[]">
+                        <label for="competition_new_${scheduleCount}">Competition Only</label>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(scheduleCard);
+        }
+
+        // Preview images before upload
+        function previewImage(input, previewElement) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewElement.src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Add image preview listeners
+        document.getElementById('dojo_image').addEventListener('change', function() {
+            const preview = this.previousElementSibling;
+            previewImage(this, preview);
+        });
+
+        document.getElementById('sensei_image').addEventListener('change', function() {
+            const preview = this.previousElementSibling;
+            previewImage(this, preview);
+        });
+    </script>
+</body>
+</html>

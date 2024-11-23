@@ -169,6 +169,13 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .text-green {
+            color: green;
+        }
+        .text-red {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -185,7 +192,10 @@
             {% if dojos %}
                 {% for dojo in dojos %}
                 <div class="dojo-card">
-                    <img src="{{ dojo[8] or '/static/placeholder-dojo.jpg' }}" alt="{{ dojo[1] }}" class="dojo-image">
+                    <img 
+                    src="{{ dojo[8] if dojo[8] else '/static/placeholder-dojo.jpg' }}" 
+                    alt="{{ dojo[1] if dojo[1] else 'Dojo Image' }}" 
+                    class="dojo-image">
                     <div class="dojo-content">
                         <h2 class="dojo-name">{{ dojo[1] }}</h2>
                         <div class="dojo-details">
@@ -195,7 +205,7 @@
                             <p>
                                 <i class="fas fa-check-circle"></i> 
                                 Subscription: 
-                                <span style="color: { 'green' if {dojo[13] else 'red' }}">
+                                <span class="{{ 'text-green' if dojo[13] else 'text-red' }}">
                                     {{ 'Active' if dojo[13] else 'Inactive' }}
                                 </span>
                             </p>

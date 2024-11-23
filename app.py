@@ -42,6 +42,11 @@ app.config['MAIL_DEFAULT_SENDER'] = 'dojofinderinfo@gmail.com'  # Default sender
 
 mail = Mail(app)
 
+def save_image(image):
+    image_path = os.path.join(app.config['UPLOAD_FOLDER'], image.filename)
+    image.save(image_path)
+    return image_path
+
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args,**kwargs):
@@ -116,8 +121,8 @@ def get_dojo_details_with_schedules(dojo_id):
     cursor = conn.cursor()
 
     cursor.execute('''
-        SELECT d.name, d.address, d.website, d.email, d.sensei_path, d.image_path, d.phone, d.head_instructor,
-               s.day_of_week, s.start_time, s.end_time, s.instructor, s.competition_only, s.age_range
+        SELECT d.name, d.address, d.website, d.email, d.sensei_path, d.image_path, d.phone, d.head_instructor,d.price_per_month,d.id,
+               s."day_of_week", s.start_time, s."end_time", s.instructor, s.competition_only, s.age_range
         FROM dojos d
         LEFT JOIN schedules s ON d.id = s.dojo_id
         WHERE d.id = ?
@@ -128,8 +133,8 @@ def get_dojo_details_with_schedules(dojo_id):
 
     # Process `results` into a dojo details object and a list of schedules
     if results:
-        dojo_details = results[0][:8]  # First 9 fields are dojo details
-        schedules = [result[8:] for result in results if result[8] is not None]  # Remaining fields are schedules
+        dojo_details = results[0][:10]  # First 9 fields are dojo details
+        schedules = [result[10:] for result in results if result[10] is not None]  # Remaining fields are schedules
         return dojo_details, schedules
     else:
         return None, []
@@ -196,7 +201,7 @@ def add_dojo_to_premium():
     price = request.form.get('class_price')
     head_instructor = request.form.get('head_instructor')
 
-    print(f"ADD_DOJO_TO_PREMIUM: name:{name} price{price}")
+
     #get the image files
     dojo_image = request.files.get('dojo_image')
     sensei_image = request.files.get('sensei_image')
@@ -367,7 +372,7 @@ def login_form():
         session['user_id'] = user[0]
         session['username'] = user[1]
         next_url = session.pop('intent_redirect',None)
-        print("NEXT_URL:",next_url)
+
         if not next_url:
             next_url = '/'
         return jsonify({'redirect':next_url}),200
@@ -382,7 +387,7 @@ def admin_login():
 def admin_login_form():
     username = request.form.get('username')
     password = request.form.get('password')
-    print(f"usernmame:{username} password:{password}")
+    
     if not username or not password:
         return jsonify({'error':'username and password are required!'}),400
 
@@ -450,7 +455,7 @@ def webhook_received():
         dojo_image_path = data_object.get('metadata',{}).get('dojo_image_path')
         sensei_image_path = data_object.get('metadata',{}).get('sensei_image_path')
         latitude,longitude = get_coordinates(address)
-        print(f"TEST:{user_id} {name} {address} {city} {website} {email} {phone} {price} {head_instructor} {latitude} {longitude} {sensei_image_path} {dojo_image_path}")
+        
         conn = sqlite3.connect('./DB/dojo_listings.db')
         cursor = conn.cursor()
 
@@ -544,7 +549,102 @@ def manage_dojos():
     conn.close()
     return render_template('manage_dojos.html',dojos=dojos),200
 
+@app.route('/edit_dojo/<int:dojo_id>', methods=['GET'])
+def edit_dojos(dojo_id):
+    dojo_details, schedules = get_dojo_details_with_schedules(dojo_id)
+    return render_template('edit_dojo.html', dojo_details=dojo_details, schedules=schedules), 200
 
+@app.route('/edit_dojo/<int:dojo_id>', methods=['POST'])
+def edit_dojo_form(dojo_id):
+    try:
+        conn = sqlite3.connect('./DB/dojo_listings.db')
+        cursor = conn.cursor()
+         # Handle file uploads
+        cursor.execute('SELECT image_path, sensei_path FROM dojos WHERE id = ?', (dojo_id,))
+        current_images = cursor.fetchone()
+        print(f"current_images: {current_images}")
+        dojo_image = request.files.get('dojo_image')
+        sensei_image = request.files.get('sensei_image')
+        
+        # Save files if they were uploaded
+        dojo_image_path = current_images[0]
+        if dojo_image and dojo_image.filename:
+            dojo_image_path = save_image(dojo_image)  # Implement save_image function   
+        sensei_image_path = current_images[1]
+        if sensei_image and sensei_image.filename:
+            sensei_image_path = save_image(sensei_image)  # Implement save_image function
+        # Get form data
+        dojo_data = {
+            'name': request.form.get('name'),
+            'address': request.form.get('address'),
+            'website': request.form.get('website'),
+            'email': request.form.get('email'),
+            'phone': request.form.get('phone'),
+            'head_instructor': request.form.get('head_instructor'),
+            'price_per_month': request.form.get('price_per_month'),
+            'dojo_image': dojo_image_path,
+            'sensei_image': sensei_image_path
+        }
+        
+        schedules = []
+        days = request.form.getlist('day_of_week[]')
+        start_times = request.form.getlist('start_time[]')
+        end_times = request.form.getlist('end_time[]')
+        instructors = request.form.getlist('instructor[]')
+        age_ranges = request.form.getlist('age_range[]')
+        competition_only = request.form.getlist('competition_only[]')
+
+        for i in range(len(days)):
+            schedule = {
+                'day_of_week': days[i],
+                'start_time': start_times[i],
+                'end_time': end_times[i],
+                'instructor': instructors[i],
+                'age_range': age_ranges[i],
+                'competition_only': i < len(competition_only)  # True if checkbox was checked
+            }
+
+            schedules.append(schedule)
+
+        # Update dojo information
+        cursor.execute('''
+            UPDATE dojos 
+            SET name=?, address=?, website=?, email=?, phone=?, head_instructor=?,price_per_month=?, image_path=?, sensei_path=?
+            WHERE id=?
+        ''', (
+            dojo_data['name'], dojo_data['address'], dojo_data['website'],
+            dojo_data['email'], dojo_data['phone'], dojo_data['head_instructor'],
+            dojo_data['price_per_month'], dojo_data['dojo_image'], dojo_data['sensei_image'],
+            dojo_id
+        ))
+
+        # Delete existing schedules for this dojo
+        cursor.execute('DELETE FROM schedules WHERE dojo_id=?', (dojo_id,))
+
+        # Insert new schedules
+        for schedule in schedules:
+            cursor.execute('''
+                INSERT INTO schedules (
+                    dojo_id, day_of_week, start_time, end_time,
+                    instructor, competition_only, age_range
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                dojo_id,
+                schedule['day_of_week'],
+                schedule['start_time'],
+                schedule['end_time'],
+                schedule['instructor'],
+                schedule['competition_only'],
+                schedule['age_range']
+            ))
+
+        conn.commit()
+        conn.close()
+
+        return redirect('/manage_dojos'),302
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 @app.route('/')
 def home():
