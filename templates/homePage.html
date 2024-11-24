@@ -55,36 +55,28 @@
             animation: fadeIn 1s ease-out;
         }
 
-.site-header {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 100%;
-    z-index: 1000;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: flex-end;
-}
+        .manage-dojos-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: var(--shadow-md);
+            opacity: 1;
+            visibility: visible;
+        }
 
-.manage-dojos-container {
-    margin-left: auto;
-}
-
-.manage-dojos-button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.25rem;
-    background: var(--primary-color);
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius);
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    box-shadow: var(--shadow-md);
-}
 
 .manage-dojos-button:hover {
     background: var(--primary-hover);
@@ -265,17 +257,10 @@
     </style>
 </head>
 <body>
+    <a href="/manage_dojos" class="manage-dojos-button">
+        Manage Your Dojos⛩️
+    </a>
     <main>
-        <header class="site-header">
-            <div class="manage-dojos-container">
-                <a href="/manage_dojos" class="manage-dojos-button">
-                    Manage Your Dojos⛩️
-                </a>
-            </div>
-</header>
-                </a>
-            </div>
-        </header>
         <section id="hero" class="hero">
             <div class="overlay"></div>
            <!-- <button id="add-dojo-btn" class="add-dojo-button">Add Dojo</button>-->
@@ -324,4 +309,23 @@
     </footer>
     <script src="{{ url_for('static', filename='js/homePage.js') }}"></script>
 </body>
+<script>
+    // Select the manage-dojos button
+const manageButton = document.querySelector('.manage-dojos-button');
+
+// Set the scroll event listener
+window.addEventListener('scroll', function() {
+    // Get the scroll position
+    const scrollPosition = window.scrollY;
+
+    // Set the opacity of the button based on scroll position
+    if (scrollPosition > 100) { // You can change the scroll threshold as needed
+        manageButton.style.opacity = 0; // Makes the button fade out
+        manageButton.style.visibility = 'hidden'; // Hides the button completely when fully faded
+    } else {
+        manageButton.style.opacity = 1; // Makes the button fully visible
+        manageButton.style.visibility = 'visible'; // Ensures the button is visible again
+    }
+});
+</script>
 </html>
