@@ -13,33 +13,39 @@ import stripe
 from functools import wraps
 import bcrypt
 import json
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
-app.secret_key = 'secret_key_benfica4895_glorioso'
-ADMIN_USERNAME = 'admin_ricardo'
-ADMIN_PASSWORD = 'admin_glorioso'
+# Load environment variables from a .env file (for local development)
+load_dotenv()
+
+# Core secrets and admin creds
+app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key-change-me')
+ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'admin')
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'change-me')
 
 locator = Nominatim(user_agent="meGeocoder")
 
-#BASE URL
-app.config['BASE_URL'] = 'http://localhost:5000'
+# BASE URL
+app.config['BASE_URL'] = os.getenv('BASE_URL', 'http://localhost:5000')
 
-UPLOAD_FOLDER = 'uploads/'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = os.getenv('UPLOAD_FOLDER', 'uploads/')
 
-#stripe
-app.config['STRIPE_PUBLIC_KEY'] = 'pk_test_51QCngxCfp6zxM40oNNjzGLTdTviDO0dEqsnYh81vw7AjuAXLuF5RfjNf2krsTECOAvyo2268w40E4xSe9iZ2t7Ql007vGl1yXV'
-app.config['STRIPE_SECRET_KEY'] = 'sk_test_51QCngxCfp6zxM40ow5BD0oDZeR7pgmmP9GBtwhqpxurKGOPnDHJZxn8f1DsfS65DgBDnj9gbbfKSlqsDfIoPKV6700sE1C5eLR'
+# Stripe
+app.config['STRIPE_PUBLIC_KEY'] = os.getenv('STRIPE_PUBLIC_KEY')
+app.config['STRIPE_SECRET_KEY'] = os.getenv('STRIPE_SECRET_KEY')
+app.config['STRIPE_PRICE_ID'] = os.getenv('STRIPE_PRICE_ID')
+app.config['STRIPE_WEBHOOK_SECRET'] = os.getenv('STRIPE_WEBHOOK_SECRET')
 stripe.api_key = app.config['STRIPE_SECRET_KEY']
 
-#mail configuratio
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'dojofinderinfo@gmail.com'  # Replace with your Gmail address
-app.config['MAIL_PASSWORD'] = 'apzg wucx yhsr kqto'  # Replace with your App Password
-app.config['MAIL_DEFAULT_SENDER'] = 'dojofinderinfo@gmail.com'  # Default sender email
+# Mail configuration
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', '587'))
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'true').lower() in ('1', 'true', 'yes', 'on')
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
 mail = Mail(app)
 
@@ -240,15 +246,19 @@ def add_dojo_to_premium():
         sensei_image_path = os.path.join(app.config['UPLOAD_FOLDER'], sensei_image.filename)
         sensei_image.save(sensei_image_path)
 
+    price_id = app.config.get('STRIPE_PRICE_ID')
+    if not price_id:
+        return jsonify({'error': 'Stripe price id not configured'}), 500
+
     checkout_session = stripe.checkout.Session.create(
-        payment_method_types = ['card'],
+        payment_method_types=['card'],
         line_items=[{
-            'price': 'price_1QMu0bCfp6zxM40osSS1EmTh',
+            'price': price_id,
             'quantity': 1
         }],
         mode='subscription',
         success_url=f"{app.config['BASE_URL']}/success?session_id={{CHECKOUT_SESSION_ID}}",
-        cancel_url=f"{app.config['BASE_URL']}/cancel", 
+        cancel_url=f"{app.config['BASE_URL']}/cancel",
         metadata={
             'user_id': user_id,
             'dojo_name': name,
@@ -262,7 +272,7 @@ def add_dojo_to_premium():
             'dojo_image_path': dojo_image_path,
             'sensei_image_path': sensei_image_path,
             'schedules': json.dumps(schedule_entries),
-            'username':username
+            'username': username
         }
     )
     return redirect(checkout_session.url),303
@@ -417,7 +427,7 @@ def webhook_received():
     # If you are testing with the CLI, find the secret by running 'stripe listen'
     # If you are using an endpoint defined with the API or dashboard, look in your webhook settings
     # at https://dashboard.stripe.com/webhooks
-    webhook_secret = 'whsec_a3034c19cb5d7228259ab30d30cfa1bf467baefce55adb3259c64d10c23928dc'
+    webhook_secret = app.config.get('STRIPE_WEBHOOK_SECRET')
     request_data = json.loads(request.data)
 
     if webhook_secret:
@@ -516,22 +526,21 @@ def webhook_received():
     elif event_type == 'customer.subscription.trial_will_end':
         print('Subscription trial will end')
     elif event_type == 'customer.subscription.created':
-        print('Subscription created %s', event.id)
+        print('Subscription created')
     elif event_type == 'customer.subscription.updated':
-        print('Subscription created %s', event.id)
+        print('Subscription updated')
     elif event_type == 'customer.subscription.deleted':
         # handle subscription canceled automatically based
         # upon your subscription settings. Or if the user cancels it.
         conn = sqlite3.connect('./DB/dojo_listings.db')
         cursor = conn.cursor()
-        cursor.execute('''UPDATATE dojos SET valid_subscription = 0 WHERE id = ?''',(dojo_id,))
+        cursor.execute('''UPDATE dojos SET valid_subscription = 0 WHERE id = ?''', (dojo_id,))
         conn.commit()
         conn.close()
-        
-        print('Subscription canceled: %s', event.id)
+        print('Subscription canceled')
     elif event_type == 'entitlements.active_entitlement_summary.updated':
         # handle active entitlement summary updated
-        print('Active entitlement summary updated: %s', event.id)
+        print('Active entitlement summary updated')
 
     return jsonify({'status': 'success'})
 

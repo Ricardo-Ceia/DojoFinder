@@ -79,13 +79,6 @@ Current demo defaults are hardcoded in `app.py` for simplicity (Stripe keys, Gma
 - Set `app.config['BASE_URL']` to your host (for Stripe redirects).
 - Ensure `UPLOAD_FOLDER` exists (defaults to `uploads/`).
 
-Suggested environment variables if you refactor:
-
-- SECRET_KEY
-- ADMIN_USERNAME, ADMIN_PASSWORD
-- STRIPE_PUBLIC_KEY, STRIPE_SECRET_KEY, STRIPE_PRICE_ID, STRIPE_WEBHOOK_SECRET
-- MAIL_SERVER, MAIL_PORT, MAIL_USE_TLS, MAIL_USERNAME, MAIL_PASSWORD, MAIL_DEFAULT_SENDER
-- BASE_URL, UPLOAD_FOLDER
 
 4) Run the app
 
@@ -171,30 +164,9 @@ Flask-Mail is configured to use SMTP (Gmail in the sample). If you test with Gma
 - The app serves them from `/uploads/<filename>`
 - Ensure `uploads/` is writable in your environment
 
-## Security and production readiness
-
-- Do NOT commit secrets to source control; use environment variables or a secret manager
-- Replace the demo keys/passwords in `app.py`
-- Use secure cookies and CSRF protection for forms
-- Validate/sanitize uploaded files; restrict content types and size
-- Set a unique Nominatim user-agent and respect usage policies
-- Consider gunicorn/uwsgi for deployment behind a reverse proxy
-- Configure HTTPS (especially for Stripe redirects and webhooks)
-- Set proper logging and error handling
-
 ## Troubleshooting
 
 - Near-me results empty: ensure dojos have valid `latitude/longitude` (created on payment via geocoding) and you submit realistic coordinates
 - Webhook not firing: check Stripe CLI forwarding, signature secret, and that your endpoint is reachable
 - Emails not sending: verify SMTP credentials, ports, and app password
 - DB errors: delete and recreate `DB/dojo_listings.db` using `DB/set_up_database.py`
-
-## Contributing
-
-1. Fork the repo and create a feature branch
-2. Make changes with tests where applicable
-3. Open a Pull Request with a clear description and screenshots if UI changes
-
-## License
-
-No license file is provided. If you intend to open source this project, consider adding a LICENSE (e.g., MIT, Apache-2.0, GPL).
